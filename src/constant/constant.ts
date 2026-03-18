@@ -3,4 +3,5 @@ export const DOMAIN = {
 };
 export const API_PASS = {
     LOGIN:DOMAIN.DATA_BASE + '/auth/login',
+    AUTH_ME:DOMAIN.DATA_BASE + '/auth/me',
 };
