@@ -4,7 +4,7 @@ import {useState} from "react";
 import React from "react";
 import {useLogin} from "../hooks/useLogin.ts";
 
-function Login() {
+function PagesLogin() {
 
     const [email,setEmail] = useState<string>('');
     const [password,setPassword] = useState<string>('');
@@ -30,4 +30,4 @@ function Login() {
   )
 }
 
-export default Login
+export default PagesLogin

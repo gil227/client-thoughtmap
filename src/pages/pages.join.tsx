@@ -1,4 +1,4 @@
-function Join(){
+function PagesJoin(){
     return <>
         <label>아이디</label>
         <input type="text"/>
@@ -8,4 +8,4 @@ function Join(){
     </>
 }
 
-export default Join
+export default PagesJoin
