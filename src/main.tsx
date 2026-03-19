@@ -6,18 +6,23 @@ import PagesLogin from "./pages/pages.login.tsx";
 import PagesJoin from "./pages/pages.join.tsx";
 import ComponentsAuthPages from "./components/components.auth.pages.tsx";
 import PagesCanvas from "./pages/pages.canvas.tsx";
+import {QueryClientProvider, QueryClient} from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-      <BrowserRouter>
-          <Routes>
-              <Route path={"/"} element={<PagesLogin/>}/>
-              <Route path={"/join"} element={<PagesJoin/>}/>
-              <Route path={"/canvas"} element={
-                  <ComponentsAuthPages>
-                      <PagesCanvas/>
-                  </ComponentsAuthPages>}/>
-          </Routes>
-      </BrowserRouter>
+      <QueryClientProvider client={queryClient}>
+          <BrowserRouter>
+              <Routes>
+                  <Route path={"/"} element={<PagesLogin/>}/>
+                  <Route path={"/join"} element={<PagesJoin/>}/>
+                  <Route path={"/canvas"} element={
+                      <ComponentsAuthPages>
+                          <PagesCanvas/>
+                      </ComponentsAuthPages>}/>
+              </Routes>
+          </BrowserRouter>
+      </QueryClientProvider>
   </StrictMode>,
 )
