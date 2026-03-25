@@ -29,7 +29,6 @@ function PagesCanvas(){
             return resData;
         }
     })
-    console.log('error',error);
     return <>
         {isPending && <S.Loading/>}
         {error && <S.Error/>}
