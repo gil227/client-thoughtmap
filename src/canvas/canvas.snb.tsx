@@ -13,15 +13,17 @@ const S = {
     ListItem:styled.li({})
 }
 
-function CanvasSnb({list}:{list?:ICanvasList[]}){
+function CanvasSnb({list, isLoading}:ICanvasList){
     const [onCreate,setOnCreate] = useState<boolean>(false);
+    if(isLoading){
+        return <S.Section>로딩 중</S.Section>
+    }
     return <S.Section>
-        {!list && '비어있음'}
-        {list && <S.ListWrap>
+        {list.length !== 0 ? <S.ListWrap>
             {list.map((item)=>{
                 return <S.ListItem>{item.title}</S.ListItem>
             })}
-        </S.ListWrap>}
+        </S.ListWrap> : '비어있음'}
         <button onClick={()=> setOnCreate(()=>{
             return !onCreate;
         })}>신규만들기</button>

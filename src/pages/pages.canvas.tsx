@@ -2,7 +2,7 @@ import CanvasSnb from "../canvas/canvas.snb.tsx";
 import {useQuery} from "@tanstack/react-query";
 import WithCredentialFetch from "../utils/utils.credential.fetch.ts";
 import {API_PASS} from "../constant/constant.ts";
-import type {ICanvasList} from "../interface/interface.api.ts";
+import type {ICanvasListItem} from "../interface/interface.api.ts";
 import styled from "@emotion/styled";
 
 const S = {
@@ -21,18 +21,19 @@ const S = {
 }
 
 function PagesCanvas(){
-    const {isPending,error,data:canvasList} = useQuery<ICanvasList[]>({
+    const {isPending,error,data:canvasList} = useQuery<ICanvasListItem[]>({
         queryKey:['canvasList'],
         queryFn:async () =>{
             const res = await WithCredentialFetch(API_PASS.CANVAS_LIST);
-            const resData:ICanvasList[] = await res.json();
-            return resData;
+            if(!res) throw new Error('리스폰스가 언디파인 입니다.');
+            const resData:ICanvasListItem[] = await res.json();
+            return resData.length === 0 ? [] : resData;
         }
     })
     return <>
         {isPending && <S.Loading/>}
         {error && <S.Error/>}
-        <CanvasSnb list={canvasList}/>
+        <CanvasSnb list={canvasList ?? []} isLoading={isPending}/>
     </>
 }
 
