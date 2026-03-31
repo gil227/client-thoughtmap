@@ -7,6 +7,7 @@ import PagesJoin from "./pages/pages.join.tsx";
 import ComponentsAuthPages from "./components/components.auth.pages.tsx";
 import PagesCanvas from "./pages/pages.canvas.tsx";
 import {QueryClientProvider, QueryClient} from "@tanstack/react-query";
+import PagesNode from "./pages/pages.node.tsx";
 
 const queryClient = new QueryClient();
 
@@ -21,6 +22,9 @@ createRoot(document.getElementById('root')!).render(
                       <ComponentsAuthPages>
                           <PagesCanvas/>
                       </ComponentsAuthPages>}/>
+                  <Route path={"/canvas/:canvasId/nodes"} element={<ComponentsAuthPages>
+                      <PagesNode/>
+                  </ComponentsAuthPages>}></Route>
               </Routes>
           </BrowserRouter>
       </QueryClientProvider>
