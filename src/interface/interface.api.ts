@@ -1,9 +1,12 @@
+import React from "react";
+
 export interface ILoginPayload {
     email: string;
     password: string;
 }
 
 export interface ICanvasList{
+    ref:React.Ref<HTMLElement>
     isLoading:boolean;
     list:ICanvasListItem[];
 }

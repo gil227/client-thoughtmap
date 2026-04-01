@@ -45,7 +45,7 @@ function CanvasCreate(props:IProps){
                 body:JSON.stringify({title:canvasName})
             });
 
-            return res.json();
+            return res?.json();
         },
         onSuccess:()=>{
             queryClient.invalidateQueries({queryKey:['canvasList']}).then(()=>{
