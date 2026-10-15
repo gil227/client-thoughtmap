@@ -2,6 +2,7 @@ import {Link, useNavigate} from "react-router";
 import {useState} from "react";
 import React from "react";
 import {useLogin} from "../hooks/useLogin.ts";
+import {CLIENT_PASS} from "../constant/constant.ts";
 
 function PagesLogin() {
 
@@ -22,7 +23,7 @@ function PagesLogin() {
                 setIsError(true);
             }
 
-            navigate('/canvas');
+            return navigate(CLIENT_PASS.CANVAS);
         }catch(e) {
             setIsError(true);
             throw e
@@ -35,7 +36,7 @@ function PagesLogin() {
           <input type="text" value={email} onChange={(e) => setEmail(e.target.value)}/>
           <input type="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
           <button type={'submit'}>로그인</button>
-          <Link to={'/join'}>회원가입</Link>
+          <Link to={CLIENT_PASS.SIGN_UP}>회원가입</Link>
       </div>
         {isError && <p>로그인 실패</p>}
     </form>
