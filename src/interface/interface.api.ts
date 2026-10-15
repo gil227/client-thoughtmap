@@ -1,6 +1,6 @@
 import React from "react";
 
-export interface ILoginPayload {
+export interface IAuthPayload {
     email: string;
     password: string;
 }
