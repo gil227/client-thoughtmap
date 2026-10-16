@@ -25,6 +25,7 @@ const reset = css`
     }
 
     button {
+        border-radius: 0;
         background: none;
         border: none;
         cursor: pointer;
