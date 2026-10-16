@@ -10,7 +10,9 @@ const S = {
         height:'100vh',
         borderRight:'2px solid #ccc'
     }),
-    ListWrap:styled.ul({}),
+    ListWrap:styled.ul({
+        padding:0
+    }),
 }
 
 function CanvasSnb({ref,list, isLoading}:ICanvasList){
