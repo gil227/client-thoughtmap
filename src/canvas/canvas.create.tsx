@@ -26,6 +26,7 @@ const S = {
     }),
     createField:styled.input({}),
     createButton:styled.button({
+        backgroundColor:'#000',
         display:'block'
     })
 }
