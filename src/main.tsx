@@ -9,11 +9,13 @@ import PagesCanvas from "./pages/pages.canvas.tsx";
 import {QueryClientProvider, QueryClient} from "@tanstack/react-query";
 import PagesNode from "./pages/pages.node.tsx";
 import {CLIENT_PASS} from "./constant/constant.ts";
+import CssGlobal from "./css/css.global.tsx";
 
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
+      <CssGlobal/>
       <QueryClientProvider client={queryClient}>
           <BrowserRouter>
               <Routes>
