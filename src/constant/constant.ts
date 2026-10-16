@@ -13,5 +13,5 @@ export const API_PASS = {
 export const CLIENT_PASS = {
     LOGIN:'/',
     SIGN_UP:'/signup',
-    CANVAS:'/canvas:'
+    CANVAS:'/canvas'
 }
