@@ -1,12 +1,9 @@
-import React from "react";
-
 export interface IAuthPayload {
     email: string;
     password: string;
 }
 
 export interface ICanvasList{
-    ref:React.Ref<HTMLElement>
     isLoading:boolean;
     list:ICanvasListItem[];
 }
