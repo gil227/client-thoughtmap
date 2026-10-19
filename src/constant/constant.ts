@@ -2,6 +2,11 @@ export const DOMAIN = {
     // DATA_BASE:'https://server-thoughtmap.onrender.com'
     DATA_BASE:import.meta.env.VITE_API_URL
 };
+
+export const CLIENT_SNB = {
+    WIDTH:300
+};
+
 export const API_PASS = {
     LOGIN:DOMAIN.DATA_BASE + '/auth/login',
     SIGN_UP:DOMAIN.DATA_BASE + '/auth/signup',
