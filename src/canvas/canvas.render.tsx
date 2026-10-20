@@ -51,7 +51,7 @@ function CanvasRender(){
             cancelAnimationFrame(frame);
             window.removeEventListener("resize", onResizeHandler);
         };
-    },[]);
+    },[store]);
 
     return <canvas ref={canvasEl}></canvas>
 }
