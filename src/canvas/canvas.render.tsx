@@ -1,33 +1,47 @@
 import {useEffect, useRef} from "react";
 import {CLIENT_SNB} from "../constant/constant.ts";
+import {useStore} from "jotai";
+import {storeViewport} from "../store/store.viewport.ts";
 
 function CanvasRender(){
     const canvasEl = useRef<HTMLCanvasElement>(null);
+    const store = useStore();
+
 
     useEffect(()=>{
         const canvas = canvasEl.current;
         const ctx = canvas?.getContext("2d");
-        if(!ctx) return;
+        if(!ctx || !canvas) return;
 
         let moveX = 0;
         let frame = 0;
+        let styleWidth = 0;
+        let styleHeight = 0;
+        let dpr = 1;
 
         const onResizeHandler = () =>{
-            if(!canvas) return;
-            canvas.width = window.innerWidth - CLIENT_SNB.WIDTH;
-            canvas.height = window.innerHeight;
+            styleWidth = window.innerWidth - CLIENT_SNB.WIDTH;
+            styleHeight = window.innerHeight;
+            dpr = devicePixelRatio;
+
+            canvas.style.width = `${styleWidth}px`;
+            canvas.style.height = `${styleHeight}px`;
+            canvas.width = Math.round(styleWidth*dpr);
+            canvas.height = Math.round(styleHeight*dpr);
         }
 
         onResizeHandler();
         window.addEventListener("resize", onResizeHandler);
 
         const loop = () =>{
-            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+            const {x,y,scale} = store.get(storeViewport);
+            ctx.setTransform(dpr*scale, 0, 0, dpr*scale, dpr*x, dpr*y);
+            ctx.clearRect(0, 0, styleWidth, styleHeight);
             ctx.fillStyle = '#ccc';
             ctx.fillRect(moveX,100,100,100);
 
             moveX+=5;
-            if(moveX>ctx.canvas.width) moveX=0;
+            if(moveX>styleWidth) moveX=0;
             frame = requestAnimationFrame(loop);
         }
 
