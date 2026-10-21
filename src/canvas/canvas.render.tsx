@@ -2,6 +2,8 @@ import {useEffect, useRef} from "react";
 import {CLIENT_SNB} from "../constant/constant.ts";
 import {useStore} from "jotai";
 import {storeViewport} from "../store/store.viewport.ts";
+import {canvasWorldToScreen} from "./canvas.transform.ts";
+import type {ICanvasPosition} from "../interface/interface.ts";
 
 function CanvasRender(){
     const canvasEl = useRef<HTMLCanvasElement>(null);
@@ -33,10 +35,25 @@ function CanvasRender(){
         onResizeHandler();
         window.addEventListener("resize", onResizeHandler);
 
+        const ruler = (screen:ICanvasPosition) =>{
+            ctx.beginPath();
+            ctx.strokeStyle = 'white';
+            ctx.lineWidth=2;
+            for (let i=screen.x; i<styleWidth; i+=50){
+                ctx.moveTo(i,0);
+                ctx.lineTo(i,10);
+            }
+            ctx.stroke();
+        }
+
         const loop = () =>{
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
             const {x,y,scale} = store.get(storeViewport);
-            ctx.setTransform(dpr*scale, 0, 0, dpr*scale, dpr*x, dpr*y);
             ctx.clearRect(0, 0, styleWidth, styleHeight);
+            ctx.setTransform(dpr*scale, 0, 0, dpr*scale, dpr*x, dpr*y);
+
+            const screenPosition = canvasWorldToScreen({x,y,scale},{x:styleWidth,y:styleHeight});
+            ruler(screenPosition);
             ctx.fillStyle = '#ccc';
             ctx.fillRect(moveX,100,100,100);
 
