@@ -3,8 +3,11 @@ export interface IRenderSize{
     height:number;
 }
 
-export interface IStoreViewport{
+export interface ICanvasPosition {
     x:number,
-    y:number,
+    y:number
+}
+
+export interface ICanvasViewport extends ICanvasPosition {
     scale:number,
 }
