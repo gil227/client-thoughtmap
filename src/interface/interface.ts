@@ -3,11 +3,14 @@ export interface IRenderSize{
     height:number;
 }
 
-export interface ICanvasPosition {
-    x:number,
-    y:number
+type Position = {
+    x:number;
+    y:number;
 }
 
-export interface ICanvasViewport extends ICanvasPosition {
+export type TViewportTargetPosition = Position;
+export type TDashboardTargetPosition = Position;
+
+export interface ICanvasViewport extends Position {
     scale:number,
 }
