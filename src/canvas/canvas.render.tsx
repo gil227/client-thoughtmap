@@ -2,8 +2,8 @@ import {useEffect, useRef} from "react";
 import {CLIENT_SNB} from "../constant/constant.ts";
 import {useStore} from "jotai";
 import {storeViewport} from "../store/store.viewport.ts";
-import {canvasWorldToScreen} from "./canvas.transform.ts";
-import type {ICanvasPosition} from "../interface/interface.ts";
+import {canvasViewportToDashboard} from "./canvas.transform.ts";
+import type {TViewportTargetPosition} from "../interface/interface.ts";
 
 function CanvasRender(){
     const canvasEl = useRef<HTMLCanvasElement>(null);
@@ -35,11 +35,12 @@ function CanvasRender(){
         onResizeHandler();
         window.addEventListener("resize", onResizeHandler);
 
-        const ruler = (screen:ICanvasPosition) =>{
+        const ruler = (screen:TViewportTargetPosition) =>{
             ctx.beginPath();
             ctx.strokeStyle = 'white';
             ctx.lineWidth=2;
-            for (let i=screen.x; i<styleWidth; i+=50){
+            console.log('screen.x',screen.x);
+            for (let i=0; i<screen.x; i+=50){
                 ctx.moveTo(i,0);
                 ctx.lineTo(i,10);
             }
@@ -52,7 +53,8 @@ function CanvasRender(){
             ctx.clearRect(0, 0, styleWidth, styleHeight);
             ctx.setTransform(dpr*scale, 0, 0, dpr*scale, dpr*x, dpr*y);
 
-            const screenPosition = canvasWorldToScreen({x,y,scale},{x:styleWidth,y:styleHeight});
+            console.log('{x,y,scale},{x:styleWidth,y:styleHeight}',{x,y,scale},{x:styleWidth,y:styleHeight});
+            const screenPosition = canvasViewportToDashboard({x,y,scale},{x:styleWidth,y:styleHeight});
             ruler(screenPosition);
             ctx.fillStyle = '#ccc';
             ctx.fillRect(moveX,100,100,100);
