@@ -20,3 +20,9 @@ export const CLIENT_PASS = {
     SIGN_UP:'/signup',
     CANVAS:'/canvas'
 }
+
+export const DASHBOARD = {
+    MIN:-10000,
+    MAX:10000,
+    GRID:50
+}
