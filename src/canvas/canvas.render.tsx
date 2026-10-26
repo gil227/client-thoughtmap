@@ -1,8 +1,10 @@
 import {useEffect, useRef} from "react";
-import {CLIENT_SNB, DASHBOARD} from "../constant/constant.ts";
+import {CLIENT_SNB} from "../constant/constant.ts";
 import {useStore} from "jotai";
 import {storeViewport} from "../store/store.viewport.ts";
 import {canvasDashboardToViewport, canvasViewportToDashboard} from "./canvas.transform.ts";
+import {canvasRuler} from "./canvas.ruler.ts";
+import {canvasPanning} from "./canvas.panning.ts";
 
 function CanvasRender(){
     const canvasEl = useRef<HTMLCanvasElement>(null);
@@ -34,33 +36,20 @@ function CanvasRender(){
         onResizeHandler();
         window.addEventListener("resize", onResizeHandler);
 
-        const ruler = (startX:number,endX:number) =>{
-            const from = Math.max(DASHBOARD.MIN, Math.floor(startX / DASHBOARD.GRID) * DASHBOARD.GRID);
-            const end = Math.min(DASHBOARD.MAX, endX);
-            ctx.beginPath();
-            ctx.strokeStyle = 'white';
-            ctx.lineWidth=2;
-            for (let i=from; i<end; i+=DASHBOARD.GRID){
-                ctx.moveTo(i,0);
-                ctx.lineTo(i,10);
-            }
-            ctx.stroke();
-        }
-
         const loop = () =>{
             ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
             ctx.clearRect(0, 0, styleWidth, styleHeight);
 
-            const {x,y,scale} = store.get(storeViewport);
+            const getCurrentViewport = store.get(storeViewport);
+            const getRulerEndPosition = canvasViewportToDashboard(getCurrentViewport,{x:styleWidth,y:styleHeight});
+            const getTransformPosition = canvasDashboardToViewport(getCurrentViewport,{x:0,y:0});
 
-            const getRulerEndPosition = canvasViewportToDashboard({x,y,scale},{x:styleWidth,y:styleHeight});
-            const getTransformPosition = canvasDashboardToViewport({x,y,scale},{x:0,y:0});
-
-            ctx.setTransform(dpr*scale, 0, 0, dpr*scale, getTransformPosition.x*dpr, getTransformPosition.y*dpr);
-            ruler(x,getRulerEndPosition.x);
+            ctx.setTransform(dpr*getCurrentViewport.scale, 0, 0, dpr*getCurrentViewport.scale, getTransformPosition.x*dpr, getTransformPosition.y*dpr);
             ctx.fillStyle = '#ccc';
             ctx.fillRect(moveX,100,100,100);
 
+            canvasRuler({ctx,dpr,viewport:getCurrentViewport,dashboard:getRulerEndPosition});
+            canvasPanning(store);
             moveX+=5;
             if(moveX>styleWidth) moveX=0;
             frame = requestAnimationFrame(loop);
