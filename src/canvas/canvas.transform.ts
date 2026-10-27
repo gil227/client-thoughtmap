@@ -2,6 +2,7 @@ import type {
     ICanvasViewport,
     TDashboardTargetPosition, TViewportTargetPosition
 } from "../interface/interface.ts";
+import {DASHBOARD} from "../constant/constant.ts";
 
 // 뷰포트 상태값: 브라우저의 캔버스 영역이 대시보드(월드)의 시작점(왼쪽위 모서리좌표)과 배율값
 // 대시보드: 작업영역의 전체 (월드)
@@ -38,3 +39,19 @@ export const canvasViewportToDashboard = (v:ICanvasViewport,t:TViewportTargetPos
     const y = t.y/v.scale + v.y;
     return {x,y}
 };
+
+export const canvasClamp = (v:ICanvasViewport,width:number,height:number):ICanvasViewport =>{
+    const size = DASHBOARD.MAX - DASHBOARD.MIN;
+
+    const minScale = Math.max(width/size, height/size,DASHBOARD.MIN_SCALE);
+    const scale = Math.min(Math.max(v.scale,minScale),DASHBOARD.MAX_SCALE);
+
+    const currentViewWidth =  width/scale;
+    const currentViewHeight =  height/scale;
+
+    return {
+        scale,
+        x:Math.min(Math.max(v.x, DASHBOARD.MIN), DASHBOARD.MAX - currentViewWidth),
+        y:Math.min(Math.max(v.y,DASHBOARD.MIN), DASHBOARD.MAX - currentViewHeight),
+    }
+}
