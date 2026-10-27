@@ -38,6 +38,10 @@ const reset = css`
     a {
         text-decoration: none;
     }
+    
+    canvas{
+        overscroll-behavior: none;
+    }
 `;
 
 export default function CssGlobal() {
