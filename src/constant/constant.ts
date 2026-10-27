@@ -24,5 +24,8 @@ export const CLIENT_PASS = {
 export const DASHBOARD = {
     MIN:-10000,
     MAX:10000,
-    GRID:50
+    GRID:50,
+    MIN_SCALE:0.1,
+    MAX_SCALE:5,
+    ZOOM_SPEED:0.01
 }
