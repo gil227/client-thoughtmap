@@ -1,10 +1,11 @@
 import {useEffect, useRef} from "react";
 import {CLIENT_SNB} from "../constant/constant.ts";
 import {useStore} from "jotai";
-import {storeViewport} from "../store/store.viewport.ts";
+import {storeViewport, storeViewportSize} from "../store/store.viewport.ts";
 import {canvasDashboardToViewport, canvasViewportToDashboard} from "./canvas.transform.ts";
 import {canvasRuler} from "./canvas.ruler.ts";
 import {canvasPanning} from "./canvas.panning.ts";
+import {canvasWheel} from "./canvas.wheel.ts";
 
 function CanvasRender(){
     const canvasEl = useRef<HTMLCanvasElement>(null);
@@ -15,6 +16,8 @@ function CanvasRender(){
         const canvas = canvasEl.current;
         const ctx = canvas?.getContext("2d");
         if(!ctx || !canvas) return;
+        const onPanning = canvasPanning(canvas,store);
+        const onWheel = canvasWheel(canvas,store);
 
         let moveX = 0;
         let frame = 0;
@@ -31,6 +34,11 @@ function CanvasRender(){
             canvas.style.height = `${styleHeight}px`;
             canvas.width = Math.round(styleWidth*dpr);
             canvas.height = Math.round(styleHeight*dpr);
+
+            store.set(storeViewportSize,{
+                width: styleWidth,
+                height: styleHeight
+            })
         }
 
         onResizeHandler();
@@ -49,7 +57,6 @@ function CanvasRender(){
             ctx.fillRect(moveX,100,100,100);
 
             canvasRuler({ctx,dpr,viewport:getCurrentViewport,dashboard:getRulerEndPosition});
-            canvasPanning(store);
             moveX+=5;
             if(moveX>styleWidth) moveX=0;
             frame = requestAnimationFrame(loop);
@@ -60,6 +67,8 @@ function CanvasRender(){
         return () => {
             cancelAnimationFrame(frame);
             window.removeEventListener("resize", onResizeHandler);
+            onPanning();
+            onWheel();
         };
     },[store]);
 
