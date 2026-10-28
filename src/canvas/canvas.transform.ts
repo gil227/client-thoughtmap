@@ -40,6 +40,9 @@ export const canvasViewportToDashboard = (v:ICanvasViewport,t:TViewportTargetPos
     return {x,y}
 };
 
+/*
+* 캔버스 줌, xy이동 최소 최대 제한 함수
+* */
 export const canvasClamp = (v:ICanvasViewport,width:number,height:number):ICanvasViewport =>{
     const size = DASHBOARD.MAX - DASHBOARD.MIN;
 
