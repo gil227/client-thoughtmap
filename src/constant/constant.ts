@@ -27,5 +27,5 @@ export const DASHBOARD = {
     GRID:50,
     MIN_SCALE:0.1,
     MAX_SCALE:5,
-    ZOOM_SPEED:0.01
+    ZOOM_SPEED:0.02
 }
