@@ -11,7 +11,7 @@ function ComponentsAuthPages({children}:{children:ReactElement}){
             return await WithCredentialFetch(API_PASS.AUTH_ME);
         }
         getAutoRes().then((res)=>{
-            if(res.status !== 200){
+            if(res?.status !== 200){
                 navigation('/');
             }
         });
