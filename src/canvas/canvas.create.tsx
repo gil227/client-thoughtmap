@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import React, {useState} from "react";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import WithCredentialFetch from "../utils/utils.credential.fetch.ts";
-import {API_PASS} from "../constant/constant.ts";
+import {API_PASS, QUERY_KEY} from "../constant/constant.ts";
 
 const S = {
     Wrapper:styled.section({
@@ -49,7 +49,7 @@ function CanvasCreate(props:IProps){
             return res?.json();
         },
         onSuccess:()=>{
-            queryClient.invalidateQueries({queryKey:['canvasList']}).then(()=>{
+            queryClient.invalidateQueries({queryKey:[QUERY_KEY.CANVAS_LIST]}).then(()=>{
                 props.onSuccessCreate(false);
             })
         }

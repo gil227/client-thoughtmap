@@ -29,3 +29,8 @@ export const DASHBOARD = {
     MAX_SCALE:5,
     ZOOM_SPEED:0.02
 }
+
+export const QUERY_KEY={
+    CANVAS_LIST:'canvasList',
+    CANVAS_NODES:'canvasNodes',
+}
