@@ -1,15 +1,32 @@
 import {useEffect, useRef} from "react";
-import {CLIENT_SNB} from "../constant/constant.ts";
+import {API_PASS, CLIENT_SNB, QUERY_KEY} from "../constant/constant.ts";
 import {useStore} from "jotai";
 import {storeViewport, storeViewportSize} from "../store/store.viewport.ts";
 import {canvasDashboardToViewport, canvasViewportToDashboard} from "./canvas.transform.ts";
 import {canvasRuler} from "./canvas.ruler.ts";
 import {canvasPanning} from "./canvas.panning.ts";
 import {canvasWheel} from "./canvas.wheel.ts";
+import {useParams} from "react-router";
+import {useQuery} from "@tanstack/react-query";
+import type {ICanvasListItem} from "../interface/interface.api.ts";
+import WithCredentialFetch from "../utils/utils.credential.fetch.ts";
 
 function CanvasRender(){
     const canvasEl = useRef<HTMLCanvasElement>(null);
     const store = useStore();
+    const {canvasId} = useParams();
+
+    const {isPending,error,data:canvasNodes} = useQuery<ICanvasListItem[]>({
+        queryKey:[QUERY_KEY.CANVAS_NODES],
+        queryFn:async () =>{
+            const res = await WithCredentialFetch(`${API_PASS.CANVAS_LIST}/${canvasId}/nodes`);
+            if(!res) throw new Error('리스폰스가 언디파인 입니다.');
+            const resData:ICanvasListItem[] = await res.json();
+            console.log(resData);
+            return resData.length === 0 ? [] : resData;
+        },
+        staleTime:10_000
+    })
 
 
     useEffect(()=>{
@@ -54,7 +71,7 @@ function CanvasRender(){
 
             ctx.setTransform(dpr*getCurrentViewport.scale, 0, 0, dpr*getCurrentViewport.scale, getTransformPosition.x*dpr, getTransformPosition.y*dpr);
             ctx.fillStyle = '#ccc';
-            ctx.fillRect(moveX,100,100,100);
+            ctx.fillRect(0,100,100,100);
 
             canvasRuler({ctx,dpr,viewport:getCurrentViewport,dashboard:getRulerEndPosition});
             moveX+=5;
