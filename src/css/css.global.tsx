@@ -9,6 +9,7 @@ const reset = css`
 
     html, body, #root {
         height: 100%;
+        background-color: #242424;
     }
 
     body {
@@ -38,8 +39,8 @@ const reset = css`
     a {
         text-decoration: none;
     }
-    
-    canvas{
+
+    canvas {
         overscroll-behavior: none;
     }
 `;

@@ -14,6 +14,9 @@ const S = {
     ListWrap:styled.ul({
         padding:0
     }),
+    Button:styled.button({
+        padding: '0.6em 1.2em'
+    })
 }
 
 function CanvasSnb({list, isLoading}:ICanvasList){
@@ -27,9 +30,9 @@ function CanvasSnb({list, isLoading}:ICanvasList){
                 return <CanvasSnbItem id={item.id} title={item.title} key={item.id+i}/>
             })}
         </S.ListWrap> : '비어있음'}
-        <button onClick={()=> setOnCreate(()=>{
+        <S.Button onClick={()=> setOnCreate(()=>{
             return !onCreate;
-        })}>신규만들기</button>
+        })}>신규만들기</S.Button>
         {onCreate && <CanvasCreate onSuccessCreate={setOnCreate}/>}
     </S.Section>
 }
