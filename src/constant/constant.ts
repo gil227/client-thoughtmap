@@ -32,5 +32,5 @@ export const DASHBOARD = {
 
 export const QUERY_KEY={
     CANVAS_LIST:'canvasList',
-    CANVAS_NODES:'canvasNodes',
+    CANVAS_NODES:(canvasId:string)=>['canvasNodes',canvasId],
 }
