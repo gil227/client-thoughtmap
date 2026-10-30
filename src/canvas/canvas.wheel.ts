@@ -1,7 +1,7 @@
 import type {Store} from "jotai";
 import {storeViewport, storeViewportSize} from "../store/store.viewport.ts";
 import {DASHBOARD} from "../constant/constant.ts";
-import {canvasClamp, canvasViewportToDashboard} from "./canvas.transform.ts";
+import {canvasClamp, canvasClampZoom, canvasViewportToDashboard} from "./canvas.transform.ts";
 
 export const canvasWheel =(canvas:HTMLCanvasElement,store:Store)=>{
 
@@ -14,10 +14,11 @@ export const canvasWheel =(canvas:HTMLCanvasElement,store:Store)=>{
             const cursor = {x:e.offsetX, y:e.offsetY};
             const scaleAnchor = canvasViewportToDashboard(storeViewportState,cursor);
             const scaleValue = storeViewportState.scale * Math.exp(-e.deltaY*DASHBOARD.ZOOM_SPEED);
+            const scaleClampValue = canvasClampZoom(scaleValue,viewportSize.width,viewportSize.height);
             store.set(storeViewport,canvasClamp({
-                x:scaleAnchor.x - cursor.x / scaleValue,
-                y:scaleAnchor.y - cursor.y / scaleValue,
-                scale:scaleValue
+                x:scaleAnchor.x - cursor.x / scaleClampValue,
+                y:scaleAnchor.y - cursor.y / scaleClampValue,
+                scale:scaleClampValue
             },viewportSize.width,viewportSize.height));
             return;
         }
