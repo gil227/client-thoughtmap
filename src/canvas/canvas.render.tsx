@@ -4,36 +4,40 @@ import {useStore} from "jotai";
 import {storeViewport, storeViewportSize} from "../store/store.viewport.ts";
 import {canvasDashboardToViewport, canvasViewportToDashboard} from "./canvas.transform.ts";
 import {canvasRuler} from "./canvas.ruler.ts";
-import {canvasPanning} from "./canvas.panning.ts";
+import {canvasPointer} from "./canvas.pointer.ts";
 import {canvasWheel} from "./canvas.wheel.ts";
-import {useParams} from "react-router";
 import {useQuery} from "@tanstack/react-query";
-import type {ICanvasListItem} from "../interface/interface.api.ts";
+import type {INode} from "../interface/interface.api.ts";
 import WithCredentialFetch from "../utils/utils.credential.fetch.ts";
+import {canvasDraw} from "./canvas.draw.ts";
+import {storeNodes, storeSelectNode} from "../store/store.nodes.ts";
 
-function CanvasRender(){
+function CanvasRender({canvasId}:{canvasId:string}){
     const canvasEl = useRef<HTMLCanvasElement>(null);
     const store = useStore();
-    const {canvasId} = useParams();
 
-    const {isPending,error,data:canvasNodes} = useQuery<ICanvasListItem[]>({
-        queryKey:[QUERY_KEY.CANVAS_NODES],
+    const {data:canvasNodes} = useQuery<INode[]>({
+        queryKey:QUERY_KEY.CANVAS_NODES(canvasId),
         queryFn:async () =>{
             const res = await WithCredentialFetch(`${API_PASS.CANVAS_LIST}/${canvasId}/nodes`);
             if(!res) throw new Error('리스폰스가 언디파인 입니다.');
-            const resData:ICanvasListItem[] = await res.json();
-            console.log(resData);
+            const resData:INode[] = await res.json();
             return resData.length === 0 ? [] : resData;
         },
-        staleTime:10_000
+        staleTime:10_00
     })
+
+    useEffect(() => {
+        store.set(storeNodes, canvasNodes ?? []);
+    }, [canvasNodes, store]);
 
 
     useEffect(()=>{
+        const nodes = store.get(storeNodes);
         const canvas = canvasEl.current;
         const ctx = canvas?.getContext("2d");
         if(!ctx || !canvas) return;
-        const onPanning = canvasPanning(canvas,store);
+        const onPanning = canvasPointer(canvas,store);
         const onWheel = canvasWheel(canvas,store);
 
         let moveX = 0;
@@ -70,8 +74,11 @@ function CanvasRender(){
             const getTransformPosition = canvasDashboardToViewport(getCurrentViewport,{x:0,y:0});
 
             ctx.setTransform(dpr*getCurrentViewport.scale, 0, 0, dpr*getCurrentViewport.scale, getTransformPosition.x*dpr, getTransformPosition.y*dpr);
-            ctx.fillStyle = '#ccc';
-            ctx.fillRect(0,100,100,100);
+
+            const selectNodeId = store.get(storeSelectNode);
+            if(nodes.length !== 0) {
+                nodes.forEach((node)=> canvasDraw(ctx,node, node.id === selectNodeId?.id))
+            }
 
             canvasRuler({ctx,dpr,viewport:getCurrentViewport,dashboard:getRulerEndPosition});
             moveX+=5;
@@ -87,7 +94,7 @@ function CanvasRender(){
             onPanning();
             onWheel();
         };
-    },[store]);
+    },[store,canvasNodes]);
 
     return <canvas ref={canvasEl}></canvas>
 }
