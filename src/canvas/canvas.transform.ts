@@ -40,15 +40,19 @@ export const canvasViewportToDashboard = (v:ICanvasViewport,t:TViewportTargetPos
     return {x,y}
 };
 
+/**/
+export const canvasClampZoom = (s:number,width:number,height:number) =>{
+    const size = DASHBOARD.MAX - DASHBOARD.MIN;
+    const minScale = Math.max(width/size, height/size,DASHBOARD.MIN_SCALE);
+
+    return  Math.min(Math.max(s,minScale),DASHBOARD.MAX_SCALE);
+}
+
 /*
 * 캔버스 줌, xy이동 최소 최대 제한 함수
 * */
 export const canvasClamp = (v:ICanvasViewport,width:number,height:number):ICanvasViewport =>{
-    const size = DASHBOARD.MAX - DASHBOARD.MIN;
-
-    const minScale = Math.max(width/size, height/size,DASHBOARD.MIN_SCALE);
-    const scale = Math.min(Math.max(v.scale,minScale),DASHBOARD.MAX_SCALE);
-
+    const scale = canvasClampZoom(v.scale,width,height);
     const currentViewWidth =  width/scale;
     const currentViewHeight =  height/scale;
 
