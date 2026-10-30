@@ -1,9 +1,13 @@
 import styled from "@emotion/styled";
-import type {ICanvasList} from "../interface/interface.api.ts";
+import type {ICanvasListItem} from "../interface/interface.api.ts";
 import {useState} from "react";
 import CanvasCreate from "./canvas.create.tsx";
 import CanvasSnbItem from "./canvas.snb.item.tsx";
-import {CLIENT_SNB} from "../constant/constant.ts";
+import {API_PASS, CLIENT_SNB, QUERY_KEY} from "../constant/constant.ts";
+import {useQuery} from "@tanstack/react-query";
+import WithCredentialFetch from "../utils/utils.credential.fetch.ts";
+import {ComponentsApiError} from "../components/api/components.api.error.tsx";
+import {ComponentsApiLoading} from "../components/api/components.api.loading.tsx";
 
 const S = {
     Section:styled.section({
@@ -19,14 +23,27 @@ const S = {
     })
 }
 
-function CanvasSnb({list, isLoading}:ICanvasList){
+function CanvasSnb(){
     const [onCreate,setOnCreate] = useState<boolean>(false);
-    if(isLoading){
-        return <S.Section >로딩 중</S.Section>
+    const {isPending,error,data:canvasList} = useQuery<ICanvasListItem[]>({
+        queryKey:[QUERY_KEY.CANVAS_LIST],
+        queryFn:async () =>{
+            const res = await WithCredentialFetch(API_PASS.CANVAS_LIST);
+            if(!res) throw new Error('리스폰스가 언디파인 입니다.');
+            const resData:ICanvasListItem[] = await res.json();
+            return resData.length === 0 ? [] : resData;
+        },
+        staleTime:10_000
+    })
+    if(error){
+        return <ComponentsApiError/>
+    }
+    if(isPending){
+        return <ComponentsApiLoading/>
     }
     return <S.Section>
-        {list.length !== 0 ? <S.ListWrap>
-            {list.map((item,i)=>{
+        {canvasList && canvasList?.length !== 0 ? <S.ListWrap>
+            {canvasList.map((item,i)=>{
                 return <CanvasSnbItem id={item.id} title={item.title} key={item.id+i}/>
             })}
         </S.ListWrap> : '비어있음'}
