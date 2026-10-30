@@ -1,8 +1,11 @@
 import {type Store} from "jotai";
 import {storeViewport, storeViewportSize} from "../store/store.viewport.ts";
-import {canvasClamp} from "./canvas.transform.ts";
+import {canvasClamp, canvasViewportToDashboard} from "./canvas.transform.ts";
+import {canvasHitbox} from "./canvas.hitbox.ts";
+import {storeNodes, storeSelectNode} from "../store/store.nodes.ts";
+import {canvasDrawDispatch} from "./canvas.draw.ts";
 
-export const canvasPanning = (canvas:HTMLCanvasElement,store:Store)=>{
+export const canvasPointer = (canvas:HTMLCanvasElement, store:Store)=>{
     let isPanning = false;
     let lastX = 0;
     let lastY = 0;
@@ -23,15 +26,34 @@ export const canvasPanning = (canvas:HTMLCanvasElement,store:Store)=>{
     }
 
     const onPointerDown = (e:PointerEvent) => {
-        if(!onPress) return;
+        if(!onPress){
+            //노드 선택
+            const storeNodeState = store.get(storeNodes);
+            const storeViewportState = store.get(storeViewport);
+            const {x:mouseX,y:mouseY} = canvasViewportToDashboard(storeViewportState,{x:e.offsetX,y:e.offsetY});
+            const selectedNode = canvasHitbox(storeNodeState,mouseX,mouseY);
+            store.set(storeSelectNode,selectedNode);
+            return;
+        }
+
+        //패닝 상태 및 마지막 위치 저장
         isPanning = true;
         canvas.style.cursor = "grabbing";
         lastX = e.clientX;
         lastY = e.clientY;
+
         canvas.setPointerCapture(e.pointerId);
     };
     const onPointerMove = (e:PointerEvent) => {
-        if(!isPanning || !onPress) return;
+        const selectNode = store.get(storeSelectNode);
+        if(!onPress && selectNode){
+            canvasDrawDispatch(store,selectNode,e.clientX - lastX, e.offsetY-lastY);
+        }
+
+        if(!isPanning || !onPress) {
+            return
+        }
+
         const storeViewportState = store.get(storeViewport);
         const distanceX = e.clientX - lastX;
         const distanceY = e.clientY - lastY;
