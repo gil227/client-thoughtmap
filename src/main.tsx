@@ -1,5 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import './css/global.css';
 import {BrowserRouter, Route, Routes} from "react-router";
 import PagesLogin from "./pages/pages.login.tsx";
 import PagesSignup from "./pages/pages.signup.tsx";
@@ -8,13 +9,11 @@ import PagesCanvas from "./pages/pages.canvas.tsx";
 import {QueryClientProvider, QueryClient} from "@tanstack/react-query";
 import PagesNode from "./pages/pages.node.tsx";
 import {CLIENT_PASS} from "./constant/constant.ts";
-import CssGlobal from "./css/css.global.tsx";
 
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-      <CssGlobal/>
       <QueryClientProvider client={queryClient}>
           <BrowserRouter>
               <Routes>
