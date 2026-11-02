@@ -32,5 +32,6 @@ export const DASHBOARD = {
 
 export const QUERY_KEY={
     CANVAS_LIST:'canvasList',
+    CANVAS_DISPATCH:'canvasDispatched',
     CANVAS_NODES:(canvasId:string)=>['canvasNodes',canvasId],
 }

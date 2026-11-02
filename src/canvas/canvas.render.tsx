@@ -25,7 +25,17 @@ function CanvasRender({canvasId}:{canvasId:string}){
             return resData.length === 0 ? [] : resData;
         },
         staleTime:10_00
-    })
+    });
+
+    /*const {data:dispatchRes} = useQuery({
+        queryKey:[QUERY_KEY.CANVAS_DISPATCH],
+        queryFn:async ()=>{
+            const res = await WithCredentialFetch(`${API_PASS.CANVAS_LIST}/${changeNode.canvasId}/nodes/${changeNode.id}`,{
+                method:'PATCH'
+            });
+            if(!res) throw new Error('리스폰스에러');
+        }
+    })*/
 
     useEffect(() => {
         store.set(storeNodes, canvasNodes ?? []);
@@ -33,14 +43,12 @@ function CanvasRender({canvasId}:{canvasId:string}){
 
 
     useEffect(()=>{
-        const nodes = store.get(storeNodes);
         const canvas = canvasEl.current;
         const ctx = canvas?.getContext("2d");
         if(!ctx || !canvas) return;
         const onPanning = canvasPointer(canvas,store);
         const onWheel = canvasWheel(canvas,store);
 
-        let moveX = 0;
         let frame = 0;
         let styleWidth = 0;
         let styleHeight = 0;
@@ -66,6 +74,7 @@ function CanvasRender({canvasId}:{canvasId:string}){
         window.addEventListener("resize", onResizeHandler);
 
         const loop = () =>{
+            const nodes = store.get(storeNodes);
             ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
             ctx.clearRect(0, 0, styleWidth, styleHeight);
 
@@ -75,14 +84,10 @@ function CanvasRender({canvasId}:{canvasId:string}){
 
             ctx.setTransform(dpr*getCurrentViewport.scale, 0, 0, dpr*getCurrentViewport.scale, getTransformPosition.x*dpr, getTransformPosition.y*dpr);
 
-            const selectNodeId = store.get(storeSelectNode);
-            if(nodes.length !== 0) {
-                nodes.forEach((node)=> canvasDraw(ctx,node, node.id === selectNodeId?.id))
-            }
+            const selectedNode = store.get(storeSelectNode);
+            nodes.forEach((node)=> canvasDraw(ctx,node, node.id === selectedNode))
 
             canvasRuler({ctx,dpr,viewport:getCurrentViewport,dashboard:getRulerEndPosition});
-            moveX+=5;
-            if(moveX>styleWidth) moveX=0;
             frame = requestAnimationFrame(loop);
         }
 
@@ -94,7 +99,7 @@ function CanvasRender({canvasId}:{canvasId:string}){
             onPanning();
             onWheel();
         };
-    },[store,canvasNodes]);
+    },[store]);
 
     return <canvas ref={canvasEl}></canvas>
 }
