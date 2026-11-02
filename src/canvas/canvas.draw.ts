@@ -15,21 +15,17 @@ export const canvasDraw = (ctx:CanvasRenderingContext2D,node:INode,isSelect:bool
     ctx.fillText(node.content,node.positionX + 2,node.positionY+10);
 }
 
-export const canvasDrawDispatch = (store:Store,node:INode,moveX:number,moveY:number)=>{
+export const canvasDrawDispatch = (store:Store,nodeId:string,moveX:number,moveY:number)=>{
     const oldStoreNodes = store.get(storeNodes);
-    const deleteChangedNode = oldStoreNodes.filter(item => item.id !== node.id);
-   store.set(storeNodes,{
+    const changeNode = oldStoreNodes.find(item => item.id === nodeId);
+    if(!changeNode) return console.log('chageNode not found');
+    const deleteChangedNode = oldStoreNodes.filter(item => item.id !== nodeId);
+   store.set(storeNodes,[
        ...deleteChangedNode,
-       ...[{
-           id: node.id,
-           canvasId: node.canvasId,
-           type:node.type,
-           content: node.content,
-           positionX: node.positionX + moveX,
-           positionY: node.positionY + moveY,
-           width: node.width,
-           height: node.height,
-           createdAt: node.createdAt
-       }]
-   })
+       {
+           ...changeNode,
+           positionX: changeNode.positionX + moveX,
+           positionY: changeNode.positionY + moveY,
+       }
+   ])
 }

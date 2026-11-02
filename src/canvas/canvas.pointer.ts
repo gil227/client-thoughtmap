@@ -7,10 +7,10 @@ import {canvasDrawDispatch} from "./canvas.draw.ts";
 
 export const canvasPointer = (canvas:HTMLCanvasElement, store:Store)=>{
     let isPanning = false;
+    let isDrag = false;
     let lastX = 0;
     let lastY = 0;
     let onPress = false;
-    const viewportSize = store.get(storeViewportSize);
 
     const onSpacebarsDown = (e:KeyboardEvent) =>{
         if(e.code === 'Space'){
@@ -26,48 +26,50 @@ export const canvasPointer = (canvas:HTMLCanvasElement, store:Store)=>{
     }
 
     const onPointerDown = (e:PointerEvent) => {
+        lastX = e.clientX;
+        lastY = e.clientY;
+
+        canvas.setPointerCapture(e.pointerId);
+
         if(!onPress){
             //노드 선택
             const storeNodeState = store.get(storeNodes);
             const storeViewportState = store.get(storeViewport);
             const {x:mouseX,y:mouseY} = canvasViewportToDashboard(storeViewportState,{x:e.offsetX,y:e.offsetY});
             const selectedNode = canvasHitbox(storeNodeState,mouseX,mouseY);
-            store.set(storeSelectNode,selectedNode);
+            if(selectedNode) isDrag = true;
+            store.set(storeSelectNode,selectedNode?.id ?? null);
             return;
         }
 
         //패닝 상태 및 마지막 위치 저장
         isPanning = true;
         canvas.style.cursor = "grabbing";
-        lastX = e.clientX;
-        lastY = e.clientY;
-
-        canvas.setPointerCapture(e.pointerId);
     };
     const onPointerMove = (e:PointerEvent) => {
+        if(!isPanning && !isDrag) return;
         const selectNode = store.get(storeSelectNode);
-        if(!onPress && selectNode){
-            canvasDrawDispatch(store,selectNode,e.clientX - lastX, e.offsetY-lastY);
-        }
-
-        if(!isPanning || !onPress) {
-            return
-        }
-
+        const viewportSize = store.get(storeViewportSize);
         const storeViewportState = store.get(storeViewport);
-        const distanceX = e.clientX - lastX;
-        const distanceY = e.clientY - lastY;
+        const distanceX = (e.clientX - lastX)/storeViewportState.scale;
+        const distanceY = (e.clientY - lastY)/storeViewportState.scale;
         lastX = e.clientX;
         lastY = e.clientY;
+
+        if(selectNode && isDrag){
+            canvasDrawDispatch(store,selectNode,distanceX, distanceY);
+            return;
+        }
 
         store.set(storeViewport,canvasClamp({
             ...storeViewportState,
-            x:storeViewportState.x - distanceX/storeViewportState.scale,
-            y:storeViewportState.y - distanceY/storeViewportState.scale,
+            x:storeViewportState.x - distanceX,
+            y:storeViewportState.y - distanceY,
         },viewportSize.width,viewportSize.height))
     };
     const onPointerUp = (e:PointerEvent) => {
         isPanning = false;
+        isDrag = false;
         canvas.releasePointerCapture(e.pointerId);
     };
 
