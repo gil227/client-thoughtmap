@@ -14,12 +14,12 @@ body {
 }
 
 img, svg, canvas, video {
-    display: block; /* 인라인 요소 아래 생기는 몇 px 틈 제거 */
+    display: block;
     max-width: 100%;
 }
 
 input, button, textarea, select {
-    font: inherit; /* 폼 요소가 body 폰트를 따르게 */
+    font: inherit;
 }
 
 button {
