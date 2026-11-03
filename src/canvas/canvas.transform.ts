@@ -41,11 +41,11 @@ export const canvasViewportToDashboard = (v:ICanvasViewport,t:TViewportTargetPos
 };
 
 /**/
-export const canvasClampZoom = (s:number,width:number,height:number) =>{
+export const canvasClampZoom = (scale:number,width:number,height:number) =>{
     const size = DASHBOARD.MAX - DASHBOARD.MIN;
     const minScale = Math.max(width/size, height/size,DASHBOARD.MIN_SCALE);
 
-    return  Math.min(Math.max(s,minScale),DASHBOARD.MAX_SCALE);
+    return  Math.min(Math.max(scale,minScale),DASHBOARD.MAX_SCALE);
 }
 
 /*
