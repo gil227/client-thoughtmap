@@ -4,13 +4,20 @@ import {canvasClamp, canvasViewportToDashboard} from "./canvas.transform.ts";
 import {canvasHitbox} from "./canvas.hitbox.ts";
 import {storeNodes, storeSelectNode} from "../store/store.nodes.ts";
 import {canvasDrawDispatch} from "./canvas.draw.ts";
+import {utilSelectNode} from "../utils/util.select.node.ts";
+import type {ICanvasPatch} from "../interface/interface.api.ts";
 
-export const canvasPointer = (canvas:HTMLCanvasElement, store:Store)=>{
+interface IPointerCallback{
+    onPatch:({nodeId,body}:ICanvasPatch) => void;
+}
+
+export const canvasPointer = (canvas:HTMLCanvasElement,store:Store,{onPatch}:IPointerCallback)=>{
     let isPanning = false;
     let isDrag = false;
     let lastX = 0;
     let lastY = 0;
     let onPress = false;
+    let nodeDragStart:{x:number,y:number}|null = null;
 
     const onSpacebarsDown = (e:KeyboardEvent) =>{
         if(e.code === 'Space'){
@@ -37,7 +44,11 @@ export const canvasPointer = (canvas:HTMLCanvasElement, store:Store)=>{
             const storeViewportState = store.get(storeViewport);
             const {x:mouseX,y:mouseY} = canvasViewportToDashboard(storeViewportState,{x:e.offsetX,y:e.offsetY});
             const selectedNode = canvasHitbox(storeNodeState,mouseX,mouseY);
-            if(selectedNode) isDrag = true;
+            if(selectedNode){
+                isDrag = true;
+                nodeDragStart = {x:selectedNode.positionX,y:selectedNode.positionY};
+            }
+            console.log('isDown');
             store.set(storeSelectNode,selectedNode?.id ?? null);
             return;
         }
@@ -61,6 +72,7 @@ export const canvasPointer = (canvas:HTMLCanvasElement, store:Store)=>{
             return;
         }
 
+        //뷰포트 이동
         store.set(storeViewport,canvasClamp({
             ...storeViewportState,
             x:storeViewportState.x - distanceX,
@@ -68,6 +80,12 @@ export const canvasPointer = (canvas:HTMLCanvasElement, store:Store)=>{
         },viewportSize.width,viewportSize.height))
     };
     const onPointerUp = (e:PointerEvent) => {
+        const selectNode = utilSelectNode(store);
+        if(selectNode){
+            const {id,positionX, positionY} = selectNode;
+            onPatch({nodeId:id,body:{...selectNode,positionX,positionY}});
+            console.log('start:',nodeDragStart,'/ end:',{x:positionX,y:positionY});
+        }
         isPanning = false;
         isDrag = false;
         canvas.releasePointerCapture(e.pointerId);

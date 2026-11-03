@@ -6,8 +6,8 @@ import {canvasDashboardToViewport, canvasViewportToDashboard} from "./canvas.tra
 import {canvasRuler} from "./canvas.ruler.ts";
 import {canvasPointer} from "./canvas.pointer.ts";
 import {canvasWheel} from "./canvas.wheel.ts";
-import {useQuery} from "@tanstack/react-query";
-import type {INode} from "../interface/interface.api.ts";
+import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
+import type {ICanvasPatch, INode} from "../interface/interface.api.ts";
 import WithCredentialFetch from "../utils/utils.credential.fetch.ts";
 import {canvasDraw} from "./canvas.draw.ts";
 import {storeNodes, storeSelectNode} from "../store/store.nodes.ts";
@@ -15,6 +15,7 @@ import {storeNodes, storeSelectNode} from "../store/store.nodes.ts";
 function CanvasRender({canvasId}:{canvasId:string}){
     const canvasEl = useRef<HTMLCanvasElement>(null);
     const store = useStore();
+    const queryClient = useQueryClient();
 
     const {data:canvasNodes} = useQuery<INode[]>({
         queryKey:QUERY_KEY.CANVAS_NODES(canvasId),
@@ -24,18 +25,21 @@ function CanvasRender({canvasId}:{canvasId:string}){
             const resData:INode[] = await res.json();
             return resData.length === 0 ? [] : resData;
         },
-        staleTime:10_00
+        staleTime:5_000
     });
 
-    /*const {data:dispatchRes} = useQuery({
-        queryKey:[QUERY_KEY.CANVAS_DISPATCH],
-        queryFn:async ()=>{
-            const res = await WithCredentialFetch(`${API_PASS.CANVAS_LIST}/${changeNode.canvasId}/nodes/${changeNode.id}`,{
-                method:'PATCH'
-            });
-            if(!res) throw new Error('리스폰스에러');
+    const {mutate:onPatchNode} = useMutation(({
+        mutationFn:async ({nodeId,body}:ICanvasPatch)=>{
+            const res = await WithCredentialFetch(`${API_PASS.CANVAS_LIST}/${canvasId}/nodes/${nodeId}`,{
+                method:'PATCH',
+                body:JSON.stringify(body)
+            })
+            if(!res?.ok) throw new Error('수정실패')
+        },
+        onSuccess:()=>{
+            queryClient.invalidateQueries({queryKey:QUERY_KEY.CANVAS_NODES(canvasId)})
         }
-    })*/
+    }))
 
     useEffect(() => {
         store.set(storeNodes, canvasNodes ?? []);
@@ -46,7 +50,9 @@ function CanvasRender({canvasId}:{canvasId:string}){
         const canvas = canvasEl.current;
         const ctx = canvas?.getContext("2d");
         if(!ctx || !canvas) return;
-        const onPanning = canvasPointer(canvas,store);
+        const onPanning = canvasPointer(canvas,store,{
+            onPatch:({nodeId, body})=> onPatchNode({nodeId,body})
+        });
         const onWheel = canvasWheel(canvas,store);
 
         let frame = 0;
