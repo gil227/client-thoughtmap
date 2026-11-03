@@ -1,6 +1,7 @@
 import type {INode} from "../interface/interface.api.ts";
 import {type Store} from "jotai";
 import {storeNodes} from "../store/store.nodes.ts";
+import {utilSelectNode} from "../utils/util.select.node.ts";
 
 export const canvasDraw = (ctx:CanvasRenderingContext2D,node:INode,isSelect:boolean) =>{
     ctx.fillStyle = '#ccc';
@@ -16,16 +17,16 @@ export const canvasDraw = (ctx:CanvasRenderingContext2D,node:INode,isSelect:bool
 }
 
 export const canvasDrawDispatch = (store:Store,nodeId:string,moveX:number,moveY:number)=>{
-    const oldStoreNodes = store.get(storeNodes);
-    const changeNode = oldStoreNodes.find(item => item.id === nodeId);
-    if(!changeNode) return console.log('chageNode not found');
-    const deleteChangedNode = oldStoreNodes.filter(item => item.id !== nodeId);
+    const originStoreNodes = store.get(storeNodes);
+    const selectNode = utilSelectNode(store);
+    if(!selectNode) return console.log('chageNode not found');
+    const deleteChangedNode = originStoreNodes.filter(item => item.id !== nodeId);
    store.set(storeNodes,[
        ...deleteChangedNode,
        {
-           ...changeNode,
-           positionX: changeNode.positionX + moveX,
-           positionY: changeNode.positionY + moveY,
+           ...selectNode,
+           positionX: selectNode.positionX + moveX,
+           positionY: selectNode.positionY + moveY,
        }
    ])
 }
