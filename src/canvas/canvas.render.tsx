@@ -7,7 +7,7 @@ import {canvasRuler} from "./canvas.ruler.ts";
 import {canvasPointer} from "./canvas.pointer.ts";
 import {canvasWheel} from "./canvas.wheel.ts";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import type {ICanvasPatch, INode} from "../interface/interface.api.ts";
+import type {INode} from "../interface/interface.api.ts";
 import WithCredentialFetch from "../utils/utils.credential.fetch.ts";
 import {canvasDraw} from "./canvas.draw.ts";
 import {storeNodes, storeSelectNode} from "../store/store.nodes.ts";
@@ -29,17 +29,30 @@ function CanvasRender({canvasId}:{canvasId:string}){
     });
 
     const {mutate:onPatchNode} = useMutation(({
-        mutationFn:async ({nodeId,body}:ICanvasPatch)=>{
-            const res = await WithCredentialFetch(`${API_PASS.CANVAS_LIST}/${canvasId}/nodes/${nodeId}`,{
+        mutationFn:async (node:INode)=>{
+            const res = await WithCredentialFetch(`${API_PASS.CANVAS_LIST}/${canvasId}/nodes/${node.id}`,{
                 method:'PATCH',
-                body:JSON.stringify(body)
+                body:JSON.stringify(node)
             })
             if(!res?.ok) throw new Error('수정실패')
         },
-        onSuccess:()=>{
-            queryClient.invalidateQueries({queryKey:QUERY_KEY.CANVAS_NODES(canvasId)})
+        onSuccess:(_,node)=>{
+            queryClient.setQueryData<INode[]>(QUERY_KEY.CANVAS_NODES(canvasId),(before)=>{
+                return before?.map((oldNode) => {
+                   return oldNode.id === node.id ? {...oldNode, positionX:node.positionX, positionY:node.positionY} : oldNode
+                })
+            })
         }
     }))
+
+    /*const {mutate:onDeleteNode} = useMutation(({
+        mutationFn:async (node:INode)=>{
+            const deleteNode = await WithCredentialFetch(`${API_PASS.CANVAS_LIST}/${canvasId}/nodes/${node.id}`,{
+                method:'DELETE'
+            });
+            if(!deleteNode?.ok) throw new Error('삭제실패')
+        }
+    }))*/
 
     useEffect(() => {
         store.set(storeNodes, canvasNodes ?? []);
@@ -51,7 +64,7 @@ function CanvasRender({canvasId}:{canvasId:string}){
         const ctx = canvas?.getContext("2d");
         if(!ctx || !canvas) return;
         const onPanning = canvasPointer(canvas,store,{
-            onPatch:({nodeId, body})=> onPatchNode({nodeId,body})
+            onPatch:(node)=> onPatchNode(node)
         });
         const onWheel = canvasWheel(canvas,store);
 

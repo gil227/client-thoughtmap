@@ -7,9 +7,17 @@ import type {INode} from "../interface/interface.api.ts";
 * @param store jotai 스토어
 * @return 선택된 노드 객체
 * */
-export const utilSelectNode = (store:Store):INode|undefined =>{
+export const utilNode = (store:Store):INode|undefined =>{
     const selectNodeId = store.get(storeSelectNode);
     const nodesList = store.get(storeNodes);
 
     return nodesList.find(node => node.id === selectNodeId);
 }
+
+/*
+* 소수 첫쨰까지 반올림 계산
+* @return ex) 10.163132 => 10.2
+* */
+export const utilNodeMathRound =(v:number)=>{
+    return Math.round(v*10)/10;
+};

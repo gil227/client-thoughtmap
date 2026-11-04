@@ -4,11 +4,11 @@ import {canvasClamp, canvasViewportToDashboard} from "./canvas.transform.ts";
 import {canvasHitbox} from "./canvas.hitbox.ts";
 import {storeNodes, storeSelectNode} from "../store/store.nodes.ts";
 import {canvasDrawDispatch} from "./canvas.draw.ts";
-import {utilSelectNode} from "../utils/util.select.node.ts";
-import type {ICanvasPatch} from "../interface/interface.api.ts";
+import {utilNode, utilNodeMathRound} from "../utils/util.node.ts";
+import type {INode} from "../interface/interface.api.ts";
 
 interface IPointerCallback{
-    onPatch:({nodeId,body}:ICanvasPatch) => void;
+    onPatch:(node:INode) => void;
 }
 
 export const canvasPointer = (canvas:HTMLCanvasElement,store:Store,{onPatch}:IPointerCallback)=>{
@@ -17,7 +17,7 @@ export const canvasPointer = (canvas:HTMLCanvasElement,store:Store,{onPatch}:IPo
     let lastX = 0;
     let lastY = 0;
     let onPress = false;
-    let nodeDragStart:{x:number,y:number}|null = null;
+    let nodeDragStart:{id:string,x:number,y:number}|null = null;
 
     const onSpacebarsDown = (e:KeyboardEvent) =>{
         if(e.code === 'Space'){
@@ -46,7 +46,7 @@ export const canvasPointer = (canvas:HTMLCanvasElement,store:Store,{onPatch}:IPo
             const selectedNode = canvasHitbox(storeNodeState,mouseX,mouseY);
             if(selectedNode){
                 isDrag = true;
-                nodeDragStart = {x:selectedNode.positionX,y:selectedNode.positionY};
+                nodeDragStart = {id:selectedNode.id,x:selectedNode.positionX,y:selectedNode.positionY};
             }
             console.log('isDown');
             store.set(storeSelectNode,selectedNode?.id ?? null);
@@ -80,15 +80,20 @@ export const canvasPointer = (canvas:HTMLCanvasElement,store:Store,{onPatch}:IPo
         },viewportSize.width,viewportSize.height))
     };
     const onPointerUp = (e:PointerEvent) => {
-        const selectNode = utilSelectNode(store);
-        if(selectNode){
-            const {id,positionX, positionY} = selectNode;
-            onPatch({nodeId:id,body:{...selectNode,positionX,positionY}});
-            console.log('start:',nodeDragStart,'/ end:',{x:positionX,y:positionY});
-        }
+        const selectNode = utilNode(store);
         isPanning = false;
         isDrag = false;
         canvas.releasePointerCapture(e.pointerId);
+        if(!nodeDragStart || !selectNode || selectNode.id !== nodeDragStart.id) return;
+
+        const dragStartX = utilNodeMathRound(nodeDragStart.x);
+        const dragStartY = utilNodeMathRound(nodeDragStart.y);
+        const nodeX = utilNodeMathRound(selectNode.positionX);
+        const nodeY = utilNodeMathRound(selectNode.positionY);
+        if(dragStartX !== nodeX || dragStartY !== nodeY){
+            onPatch({...selectNode,positionX:nodeX,positionY:nodeY});
+            nodeDragStart = null;
+        }
     };
 
     //클릭 드래그

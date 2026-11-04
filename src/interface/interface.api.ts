@@ -21,8 +21,3 @@ export interface INode{
     height: number,
     createdAt: string
 }
-
-export interface ICanvasPatch {
-    nodeId: string;
-    body:INode;
-}
