@@ -11,6 +11,7 @@ import type {INode} from "../interface/interface.api.ts";
 import WithCredentialFetch from "../utils/utils.credential.fetch.ts";
 import {canvasDraw} from "./canvas.draw.ts";
 import {storeNodes, storeSelectNode} from "../store/store.nodes.ts";
+import {canvasKeyboard} from "./canvas.keyboard.ts";
 
 function CanvasRender({canvasId}:{canvasId:string}){
     const canvasEl = useRef<HTMLCanvasElement>(null);
@@ -45,14 +46,19 @@ function CanvasRender({canvasId}:{canvasId:string}){
         }
     }))
 
-    /*const {mutate:onDeleteNode} = useMutation(({
+    const {mutate:onDeleteNode} = useMutation(({
         mutationFn:async (node:INode)=>{
             const deleteNode = await WithCredentialFetch(`${API_PASS.CANVAS_LIST}/${canvasId}/nodes/${node.id}`,{
                 method:'DELETE'
             });
             if(!deleteNode?.ok) throw new Error('삭제실패')
+        },
+        onSuccess:(_,selectNode)=>{
+            queryClient.setQueryData<INode[]>(QUERY_KEY.CANVAS_NODES(canvasId),(before)=>{
+                return before?.filter((node)=> node.id !== selectNode.id)
+            })
         }
-    }))*/
+    }))
 
     useEffect(() => {
         store.set(storeNodes, canvasNodes ?? []);
@@ -67,6 +73,7 @@ function CanvasRender({canvasId}:{canvasId:string}){
             onPatch:(node)=> onPatchNode(node)
         });
         const onWheel = canvasWheel(canvas,store);
+        const onKeyDown = canvasKeyboard();
 
         let frame = 0;
         let styleWidth = 0;
@@ -117,6 +124,7 @@ function CanvasRender({canvasId}:{canvasId:string}){
             window.removeEventListener("resize", onResizeHandler);
             onPanning();
             onWheel();
+            onKeyDown();
         };
     },[store]);
 
