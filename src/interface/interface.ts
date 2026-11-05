@@ -19,3 +19,5 @@ export interface ICanvasViewportSize{
     width:number,
     height:number
 }
+
+export type Toolbar = 'select'|'make'

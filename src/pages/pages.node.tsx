@@ -3,10 +3,14 @@ import CanvasRender from "@src/canvas/canvas.render.tsx";
 import styled from "@emotion/styled";
 import {useParams} from "react-router";
 import {ComponentsApiError} from "@src/components/api/components.api.error.tsx";
+import NodeToolbar from "@src/node/node.toolbar.tsx";
 
 const S = {
     Wrapper:styled.div({
         display:'flex',
+    }),
+    CanvasArea:styled.div({
+        position:'relative'
     })
 }
 
@@ -15,9 +19,10 @@ function PagesNode(){
     return <>
         <S.Wrapper>
             <CanvasSnb />
-            {canvasId ? <>
+            {canvasId ? <S.CanvasArea>
+                <NodeToolbar/>
                 <CanvasRender canvasId={canvasId}/>
-            </> : <ComponentsApiError/>}
+            </S.CanvasArea> : <ComponentsApiError/>}
         </S.Wrapper>
     </>
 }
