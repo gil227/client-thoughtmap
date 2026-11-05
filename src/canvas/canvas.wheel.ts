@@ -1,7 +1,7 @@
 import type {Store} from "jotai";
-import {storeViewport, storeViewportSize} from "../store/store.viewport.ts";
-import {DASHBOARD} from "../constant/constant.ts";
-import {canvasClamp, canvasClampZoom, canvasViewportToDashboard} from "./canvas.transform.ts";
+import {storeViewport, storeViewportSize} from "@src/store/store.viewport.ts";
+import {DASHBOARD} from "@src/constant/constant.ts";
+import {canvasClamp, canvasClampZoom, canvasViewportToDashboard} from "@src/canvas/canvas.transform.ts";
 
 export const canvasWheel =(canvas:HTMLCanvasElement,store:Store)=>{
 

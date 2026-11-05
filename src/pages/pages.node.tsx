@@ -1,8 +1,8 @@
-import CanvasSnb from "../canvas/canvas.snb.tsx";
-import CanvasRender from "../canvas/canvas.render.tsx";
+import CanvasSnb from "@src/canvas/canvas.snb.tsx";
+import CanvasRender from "@src/canvas/canvas.render.tsx";
 import styled from "@emotion/styled";
 import {useParams} from "react-router";
-import {ComponentsApiError} from "../components/api/components.api.error.tsx";
+import {ComponentsApiError} from "@src/components/api/components.api.error.tsx";
 
 const S = {
     Wrapper:styled.div({
@@ -15,7 +15,9 @@ function PagesNode(){
     return <>
         <S.Wrapper>
             <CanvasSnb />
-            {canvasId ? <CanvasRender canvasId={canvasId}/> : <ComponentsApiError/>}
+            {canvasId ? <>
+                <CanvasRender canvasId={canvasId}/>
+            </> : <ComponentsApiError/>}
         </S.Wrapper>
     </>
 }

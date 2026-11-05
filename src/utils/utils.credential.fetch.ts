@@ -1,4 +1,4 @@
-import {API_PASS} from "../constant/constant.ts";
+import {API_PASS} from "@src/constant/constant.ts";
 
 //리프레시 호출시 무한루프 방지 플래그
 let isRetried = false;

@@ -1,6 +1,6 @@
-import {API_PASS} from "../constant/constant.ts";
-import type {IAuthPayload} from "../interface/interface.api.ts";
-import WithCredentialFetch from "../utils/utils.credential.fetch.ts";
+import {API_PASS} from "@src/constant/constant.ts";
+import type {IAuthPayload} from "@src/interface/interface.api.ts";
+import WithCredentialFetch from "@src/utils/utils.credential.fetch.ts";
 
 export const loginAPI = async (loginBody:IAuthPayload) => {
     const res = await WithCredentialFetch(API_PASS.LOGIN,{

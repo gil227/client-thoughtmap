@@ -1,7 +1,7 @@
-import type {INode} from "../interface/interface.api.ts";
+import type {INode} from "@src/interface/interface.api.ts";
 import {type Store} from "jotai";
-import {storeNodes} from "../store/store.nodes.ts";
-import {utilNode} from "../utils/util.node.ts";
+import {storeNodes} from "@src/store/store.nodes.ts";
+import {utilNode} from "@src/utils/util.node.ts";
 
 export const canvasDraw = (ctx:CanvasRenderingContext2D,node:INode,isSelect:boolean) =>{
     ctx.fillStyle = '#ccc';

@@ -1,5 +1,5 @@
 import {atom, type PrimitiveAtom} from "jotai";
-import type {ICanvasViewport, ICanvasViewportSize} from "../interface/interface.ts";
+import type {ICanvasViewport, ICanvasViewportSize} from "@src/interface/interface.ts";
 
 export const storeViewport:PrimitiveAtom<ICanvasViewport> = atom({
     x:0,

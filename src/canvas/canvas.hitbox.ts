@@ -1,4 +1,4 @@
-import type {INode} from "../interface/interface.api.ts";
+import type {INode} from "@src/interface/interface.api.ts";
 
 
 /*

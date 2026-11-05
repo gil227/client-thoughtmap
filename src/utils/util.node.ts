@@ -1,6 +1,6 @@
 import type {Store} from "jotai";
-import {storeNodes, storeSelectNode} from "../store/store.nodes.ts";
-import type {INode} from "../interface/interface.api.ts";
+import {storeNodes, storeSelectNode} from "@src/store/store.nodes.ts";
+import type {INode} from "@src/interface/interface.api.ts";
 
 /*
 * 노드 id값으로 선택된 노드 객체 전체를 반환하는 함수

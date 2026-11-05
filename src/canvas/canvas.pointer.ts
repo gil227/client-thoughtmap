@@ -1,11 +1,11 @@
 import {type Store} from "jotai";
-import {storeViewport, storeViewportSize} from "../store/store.viewport.ts";
-import {canvasClamp, canvasViewportToDashboard} from "./canvas.transform.ts";
-import {canvasHitbox} from "./canvas.hitbox.ts";
-import {storeNodes, storeSelectNode} from "../store/store.nodes.ts";
-import {canvasDrawDispatch} from "./canvas.draw.ts";
-import {utilNode, utilNodeMathRound} from "../utils/util.node.ts";
-import type {INode} from "../interface/interface.api.ts";
+import {storeViewport, storeViewportSize} from "@src/store/store.viewport.ts";
+import {canvasClamp, canvasViewportToDashboard} from "@src/canvas/canvas.transform.ts";
+import {canvasHitbox} from "@src/canvas/canvas.hitbox.ts";
+import {storeNodes, storeSelectNode} from "@src/store/store.nodes.ts";
+import {canvasDrawDispatch} from "@src/canvas/canvas.draw.ts";
+import {utilNode, utilNodeMathRound} from "@src/utils/util.node.ts";
+import type {INode} from "@src/interface/interface.api.ts";
 
 interface IPointerCallback{
     onPatch:(node:INode) => void;

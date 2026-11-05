@@ -1,4 +1,4 @@
-import CanvasSnb from "../canvas/canvas.snb.tsx";
+import CanvasSnb from "@src/canvas/canvas.snb.tsx";
 import styled from "@emotion/styled";
 
 const S = {

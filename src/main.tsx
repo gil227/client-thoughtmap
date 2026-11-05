@@ -1,14 +1,14 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import './css/global.css';
+import '@src/css/global.css';
 import {BrowserRouter, Route, Routes} from "react-router";
-import PagesLogin from "./pages/pages.login.tsx";
-import PagesSignup from "./pages/pages.signup.tsx";
-import ComponentsAuthPages from "./components/components.auth.pages.tsx";
-import PagesCanvas from "./pages/pages.canvas.tsx";
+import PagesLogin from "@src/pages/pages.login.tsx";
+import PagesSignup from "@src/pages/pages.signup.tsx";
+import ComponentsAuthPages from "@src/components/components.auth.pages.tsx";
+import PagesCanvas from "@src/pages/pages.canvas.tsx";
 import {QueryClientProvider, QueryClient} from "@tanstack/react-query";
-import PagesNode from "./pages/pages.node.tsx";
-import {CLIENT_PASS} from "./constant/constant.ts";
+import PagesNode from "@src/pages/pages.node.tsx";
+import {CLIENT_PASS} from "@src/constant/constant.ts";
 
 const queryClient = new QueryClient();
 

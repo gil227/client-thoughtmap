@@ -1,8 +1,8 @@
 import type {
     ICanvasViewport,
     TDashboardTargetPosition, TViewportTargetPosition
-} from "../interface/interface.ts";
-import {DASHBOARD} from "../constant/constant.ts";
+} from "@src/interface/interface.ts";
+import {DASHBOARD} from "@src/constant/constant.ts";
 
 // 뷰포트 상태값: 브라우저의 캔버스 영역이 대시보드(월드)의 시작점(왼쪽위 모서리좌표)과 배율값
 // 대시보드: 작업영역의 전체 (월드)

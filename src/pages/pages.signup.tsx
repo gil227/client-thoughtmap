@@ -1,7 +1,7 @@
 import React, {useState} from "react";
-import {signupAPI} from "../api/auth.ts";
+import {signupAPI} from "@src/api/auth.ts";
 import {Link} from "react-router";
-import {CLIENT_PASS} from "../constant/constant.ts";
+import {CLIENT_PASS} from "@src/constant/constant.ts";
 
 function PagesSignup(){
     const [email, setEmail] = useState<string>('');

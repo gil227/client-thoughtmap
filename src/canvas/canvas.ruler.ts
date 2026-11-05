@@ -1,6 +1,6 @@
-import {canvasDashboardToViewport} from "./canvas.transform.ts";
-import {DASHBOARD} from "../constant/constant.ts";
-import type {ICanvasViewport, TDashboardTargetPosition} from "../interface/interface.ts";
+import {canvasDashboardToViewport} from "@src/canvas/canvas.transform.ts";
+import {DASHBOARD} from "@src/constant/constant.ts";
+import type {ICanvasViewport, TDashboardTargetPosition} from "@src/interface/interface.ts";
 
 interface IProps{
     ctx:CanvasRenderingContext2D;

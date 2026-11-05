@@ -1,11 +1,11 @@
 import {useState} from "react";
 import {loginAPI} from "../api/auth.ts";
-import type {ILoginPayload} from "../interface/interface.api.ts";
+import type {IAuthPayload} from "@src/interface/interface.api.ts";
 
 export  const useLogin = () => {
     const [loading, setLoading] = useState(false);
 
-    const login = async (loginBody:ILoginPayload) =>{
+    const login = async (loginBody:IAuthPayload) =>{
         setLoading(true);
         try {
             return await loginAPI(loginBody);

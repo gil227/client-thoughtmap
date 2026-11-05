@@ -1,17 +1,17 @@
 import {useEffect, useRef} from "react";
-import {API_PASS, CLIENT_SNB, QUERY_KEY} from "../constant/constant.ts";
+import {API_PASS, CLIENT_SNB, QUERY_KEY} from "@src/constant/constant.ts";
 import {useStore} from "jotai";
-import {storeViewport, storeViewportSize} from "../store/store.viewport.ts";
-import {canvasDashboardToViewport, canvasViewportToDashboard} from "./canvas.transform.ts";
-import {canvasRuler} from "./canvas.ruler.ts";
-import {canvasPointer} from "./canvas.pointer.ts";
-import {canvasWheel} from "./canvas.wheel.ts";
+import {storeViewport, storeViewportSize} from "@src/store/store.viewport.ts";
+import {canvasDashboardToViewport, canvasViewportToDashboard} from "@src/canvas/canvas.transform.ts";
+import {canvasRuler} from "@src/canvas/canvas.ruler.ts";
+import {canvasPointer} from "@src/canvas/canvas.pointer.ts";
+import {canvasWheel} from "@src/canvas/canvas.wheel.ts";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import type {INode} from "../interface/interface.api.ts";
-import WithCredentialFetch from "../utils/utils.credential.fetch.ts";
-import {canvasDraw} from "./canvas.draw.ts";
-import {storeNodes, storeSelectNode} from "../store/store.nodes.ts";
-import {canvasKeyboard} from "./canvas.keyboard.ts";
+import type {INode} from "@src/interface/interface.api.ts";
+import WithCredentialFetch from "@src/utils/utils.credential.fetch.ts";
+import {canvasDraw} from "@src/canvas/canvas.draw.ts";
+import {storeNodes, storeSelectNode} from "@src/store/store.nodes.ts";
+import {canvasKeyboard} from "@src/canvas/canvas.keyboard.ts";
 
 function CanvasRender({canvasId}:{canvasId:string}){
     const canvasEl = useRef<HTMLCanvasElement>(null);

@@ -1,6 +1,6 @@
 import {type ReactElement, useEffect} from "react";
-import WithCredentialFetch from "../utils/utils.credential.fetch.ts";
-import {API_PASS} from "../constant/constant.ts";
+import WithCredentialFetch from "@src/utils/utils.credential.fetch.ts";
+import {API_PASS} from "@src/constant/constant.ts";
 import {useNavigate} from "react-router";
 
 function ComponentsAuthPages({children}:{children:ReactElement}){

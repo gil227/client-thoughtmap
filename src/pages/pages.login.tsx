@@ -1,8 +1,8 @@
 import {Link, useNavigate} from "react-router";
 import {useState} from "react";
 import React from "react";
-import {useLogin} from "../hooks/useLogin.ts";
-import {CLIENT_PASS} from "../constant/constant.ts";
+import {useLogin} from "@src/hooks/useLogin.ts";
+import {CLIENT_PASS} from "@src/constant/constant.ts";
 
 function PagesLogin() {
 

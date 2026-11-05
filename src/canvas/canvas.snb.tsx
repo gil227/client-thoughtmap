@@ -1,13 +1,13 @@
 import styled from "@emotion/styled";
-import type {ICanvasListItem} from "../interface/interface.api.ts";
+import type {ICanvasListItem} from "@src/interface/interface.api.ts";
 import {useState} from "react";
-import CanvasCreate from "./canvas.create.tsx";
-import CanvasSnbItem from "./canvas.snb.item.tsx";
-import {API_PASS, CLIENT_SNB, QUERY_KEY} from "../constant/constant.ts";
+import CanvasCreate from "@src/canvas/canvas.create.tsx";
+import CanvasSnbItem from "@src/canvas/canvas.snb.item.tsx";
+import {API_PASS, CLIENT_SNB, QUERY_KEY} from "@src/constant/constant.ts";
 import {useQuery} from "@tanstack/react-query";
-import WithCredentialFetch from "../utils/utils.credential.fetch.ts";
-import {ComponentsApiError} from "../components/api/components.api.error.tsx";
-import {ComponentsApiLoading} from "../components/api/components.api.loading.tsx";
+import WithCredentialFetch from "@src/utils/utils.credential.fetch.ts";
+import {ComponentsApiError} from "@src/components/api/components.api.error.tsx";
+import {ComponentsApiLoading} from "@src/components/api/components.api.loading.tsx";
 
 const S = {
     Section:styled.section({
