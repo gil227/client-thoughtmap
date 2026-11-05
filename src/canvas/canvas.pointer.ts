@@ -6,18 +6,29 @@ import {storeNodes, storeSelectNode} from "@src/store/store.nodes.ts";
 import {canvasDrawDispatch} from "@src/canvas/canvas.draw.ts";
 import {utilNode, utilNodeMathRound} from "@src/utils/util.node.ts";
 import type {INode} from "@src/interface/interface.api.ts";
+import {storeToolbar} from "@src/store/store.toolbar.ts";
 
 interface IPointerCallback{
     onPatch:(node:INode) => void;
+    onMake:(x:number,y:number) => void;
 }
 
-export const canvasPointer = (canvas:HTMLCanvasElement,store:Store,{onPatch}:IPointerCallback)=>{
+export const canvasPointer = (canvas:HTMLCanvasElement,store:Store,{onPatch,onMake}:IPointerCallback)=>{
     let isPanning = false;
     let isDrag = false;
     let lastX = 0;
     let lastY = 0;
     let onPress = false;
     let nodeDragStart:{id:string,x:number,y:number}|null = null;
+
+    const cursorState = ()=>{
+        const toolbarState = store.get(storeToolbar);
+        if(toolbarState === 'make'){
+            canvas.style.cursor = "crosshair";
+        }else{
+            canvas.style.cursor = "default";
+        }
+    }
 
     const onSpacebarsDown = (e:KeyboardEvent) =>{
         if(e.code === 'Space'){
@@ -33,15 +44,16 @@ export const canvasPointer = (canvas:HTMLCanvasElement,store:Store,{onPatch}:IPo
     }
 
     const onPointerDown = (e:PointerEvent) => {
+        const toolbarState = store.get(storeToolbar);
+        const storeViewportState = store.get(storeViewport);
         lastX = e.clientX;
         lastY = e.clientY;
 
         canvas.setPointerCapture(e.pointerId);
 
-        if(!onPress){
+        if(!onPress && toolbarState === 'select'){
             //노드 선택
             const storeNodeState = store.get(storeNodes);
-            const storeViewportState = store.get(storeViewport);
             const {x:mouseX,y:mouseY} = canvasViewportToDashboard(storeViewportState,{x:e.offsetX,y:e.offsetY});
             const selectedNode = canvasHitbox(storeNodeState,mouseX,mouseY);
             if(selectedNode){
@@ -53,9 +65,14 @@ export const canvasPointer = (canvas:HTMLCanvasElement,store:Store,{onPatch}:IPo
             return;
         }
 
+        if(!onPress && toolbarState === 'make'){
+            const {x:mouseX,y:mouseY} = canvasViewportToDashboard(storeViewportState,{x:e.offsetX,y:e.offsetY});
+            onMake(mouseX,mouseY);
+        }
+
         //패닝 상태 및 마지막 위치 저장
         isPanning = true;
-        canvas.style.cursor = "grabbing";
+        if(onPress) canvas.style.cursor = "grabbing";
     };
     const onPointerMove = (e:PointerEvent) => {
         if(!isPanning && !isDrag) return;
@@ -95,6 +112,8 @@ export const canvasPointer = (canvas:HTMLCanvasElement,store:Store,{onPatch}:IPo
             nodeDragStart = null;
         }
     };
+
+    cursorState();
 
     //클릭 드래그
     canvas.addEventListener('pointerdown', onPointerDown);

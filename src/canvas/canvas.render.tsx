@@ -46,7 +46,7 @@ function CanvasRender({canvasId}:{canvasId:string}){
         }
     }))
 
-    const {mutate:onDeleteNode} = useMutation(({
+    const {mutate:deleteNode} = useMutation(({
         mutationFn:async (node:INode)=>{
             const deleteNode = await WithCredentialFetch(`${API_PASS.CANVAS_LIST}/${canvasId}/nodes/${node.id}`,{
                 method:'DELETE'
@@ -60,6 +60,24 @@ function CanvasRender({canvasId}:{canvasId:string}){
         }
     }))
 
+    const {mutate:onMakeNode} = useMutation(({
+        mutationFn:async ({x,y}:{x:number,y:number}) =>{
+            const res = await WithCredentialFetch(`${API_PASS.CANVAS_LIST}/${canvasId}/nodes`,{
+                method:'POST',
+                body:JSON.stringify({
+                    type: 'text',
+                    content: 'make test',
+                    positionX: x,
+                    positionY: y,
+                    width: 400,
+                    height: 200
+                })
+            });
+
+            if(!res?.ok) throw new Error('노드 추가 실패')
+        }
+    }))
+
     useEffect(() => {
         store.set(storeNodes, canvasNodes ?? []);
     }, [canvasNodes, store]);
@@ -70,10 +88,13 @@ function CanvasRender({canvasId}:{canvasId:string}){
         const ctx = canvas?.getContext("2d");
         if(!ctx || !canvas) return;
         const onPanning = canvasPointer(canvas,store,{
-            onPatch:(node)=> onPatchNode(node)
+            onPatch:(node)=> onPatchNode(node),
+            onMake:(x,y)=> onMakeNode({x,y})
         });
         const onWheel = canvasWheel(canvas,store);
-        const onKeyDown = canvasKeyboard();
+        const onKeyDown = canvasKeyboard(store,{
+            onDeleteNode:(node)=> deleteNode(node)
+        });
 
         let frame = 0;
         let styleWidth = 0;
