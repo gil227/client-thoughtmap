@@ -2,6 +2,7 @@ import styled from "@emotion/styled";
 import {useEffect, useState} from "react";
 import {useStore} from "jotai";
 import {storeToolbar} from "@src/store/store.toolbar.ts";
+import {IconAddNode, IconSelect} from "@src/icon/icon.toolbar.tsx";
 
 const Wrapper = {
     Div:styled.div({
@@ -19,8 +20,9 @@ const Wrapper = {
     Ul:styled.ul({
         display: 'flex',
         gap:'4px',
-        padding:'2px',
-        border:'1px solid #000',
+        padding:'5px',
+        backgroundColor:'#1F1F26',
+        borderRadius:'4px',
     }),
     Li:styled.li({}),
 }
@@ -28,10 +30,13 @@ const Wrapper = {
 const Icon = {
     Button:styled.button<{isActive:boolean}>(({isActive})=>({
         display: 'block',
-        width:'30px',
-        height:'30px',
-        backgroundColor:isActive ? '#b37979':'#2e426c',
+        padding:'3px',
+        backgroundColor:isActive ? '#8B5CF6':'#1F1F26',
         pointerEvents: 'auto',
+        borderRadius:'4px',
+        svg:{
+            stroke:isActive ? '#fff':'#565660'
+        }
     }))
 }
 
@@ -50,18 +55,26 @@ function NodeToolbar (){
     return <>
         <Wrapper.Div>
             <Wrapper.Ul>
-                <Wrapper.Li><Icon.Button onClick={()=>{
-                    setIsOnSelect((prev)=>{
-                        if(!prev) setIsOnMake(false);
-                        return !prev;
-                    })
-                }} isActive={isOnSelect}></Icon.Button></Wrapper.Li>
-                <Wrapper.Li><Icon.Button onClick={()=>{
+                <Wrapper.Li>
+                    <Icon.Button onClick={()=>{
+                        setIsOnSelect((prev)=>{
+                            if(!prev) setIsOnMake(false);
+                            return !prev;
+                        })
+                    }} isActive={isOnSelect}>
+                        <IconSelect/>
+                    </Icon.Button>
+                </Wrapper.Li>
+                <Wrapper.Li>
+                    <Icon.Button onClick={()=>{
                     setIsOnMake((prev)=>{
                         if(!prev) setIsOnSelect(false);
                         return !prev;
                     })
-                }} isActive={isOnMake}></Icon.Button></Wrapper.Li>
+                }} isActive={isOnMake}>
+                        <IconAddNode/>
+                    </Icon.Button>
+                </Wrapper.Li>
             </Wrapper.Ul>
         </Wrapper.Div>
     </>
