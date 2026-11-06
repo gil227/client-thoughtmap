@@ -3,15 +3,15 @@ import type {INode} from "@src/interface/interface.api.ts";
 import {utilNode} from "@src/utils/util.node.ts";
 
 interface ICallback {
-    onDeleteNode: (node:INode) => void;
+    onDeleteHandler: (node:INode) => void;
 }
 
-export const canvasKeyboard = (store:Store,{onDeleteNode}:ICallback) =>{
+export const canvasKeyboard = (store:Store,{onDeleteHandler}:ICallback) =>{
 
     const onKeyDown = (e: KeyboardEvent) => {
         const selectNode = utilNode(store);
         if(selectNode && e.code === 'Backspace'){
-            onDeleteNode(selectNode);
+            onDeleteHandler(selectNode);
         }
     }
 

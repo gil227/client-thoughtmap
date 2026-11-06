@@ -5,15 +5,15 @@ import {canvasHitbox} from "@src/canvas/canvas.hitbox.ts";
 import {storeNodes, storeSelectNode} from "@src/store/store.nodes.ts";
 import {canvasDrawDispatch} from "@src/canvas/canvas.draw.ts";
 import {utilNode, utilNodeMathRound} from "@src/utils/util.node.ts";
-import type {INode} from "@src/interface/interface.api.ts";
+import type {INodePatch} from "@src/interface/interface.api.ts";
 import {storeToolbar} from "@src/store/store.toolbar.ts";
 
 interface IPointerCallback{
-    onPatch:(node:INode) => void;
-    onMake:(x:number,y:number) => void;
+    onPatchHandler:({id,canvasId,changes}:INodePatch) => void;
+    onMakeHandler:(x:number,y:number) => void;
 }
 
-export const canvasPointer = (canvas:HTMLCanvasElement,store:Store,{onPatch,onMake}:IPointerCallback)=>{
+export const canvasPointer = (canvas:HTMLCanvasElement,store:Store,{onPatchHandler,onMakeHandler}:IPointerCallback)=>{
     let isPanning = false;
     let isDrag = false;
     let lastX = 0;
@@ -44,30 +44,30 @@ export const canvasPointer = (canvas:HTMLCanvasElement,store:Store,{onPatch,onMa
     }
 
     const onPointerDown = (e:PointerEvent) => {
-        const toolbarState = store.get(storeToolbar);
         const storeViewportState = store.get(storeViewport);
+        const toolbarState = store.get(storeToolbar);
         lastX = e.clientX;
         lastY = e.clientY;
 
         canvas.setPointerCapture(e.pointerId);
 
         if(!onPress && toolbarState === 'select'){
-            //노드 선택
             const storeNodeState = store.get(storeNodes);
             const {x:mouseX,y:mouseY} = canvasViewportToDashboard(storeViewportState,{x:e.offsetX,y:e.offsetY});
             const selectedNode = canvasHitbox(storeNodeState,mouseX,mouseY);
+            //노드 선택
             if(selectedNode){
                 isDrag = true;
                 nodeDragStart = {id:selectedNode.id,x:selectedNode.positionX,y:selectedNode.positionY};
             }
-            console.log('isDown');
             store.set(storeSelectNode,selectedNode?.id ?? null);
             return;
         }
 
         if(!onPress && toolbarState === 'make'){
             const {x:mouseX,y:mouseY} = canvasViewportToDashboard(storeViewportState,{x:e.offsetX,y:e.offsetY});
-            onMake(mouseX,mouseY);
+            onMakeHandler(mouseX,mouseY);
+            return;
         }
 
         //패닝 상태 및 마지막 위치 저장
@@ -108,7 +108,7 @@ export const canvasPointer = (canvas:HTMLCanvasElement,store:Store,{onPatch,onMa
         const nodeX = utilNodeMathRound(selectNode.positionX);
         const nodeY = utilNodeMathRound(selectNode.positionY);
         if(dragStartX !== nodeX || dragStartY !== nodeY){
-            onPatch({...selectNode,positionX:nodeX,positionY:nodeY});
+            onPatchHandler({id:selectNode.id,canvasId:selectNode.canvasId,changes:{positionX:nodeX,positionY:nodeY}});
             nodeDragStart = null;
         }
     };

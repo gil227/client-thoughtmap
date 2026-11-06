@@ -3,7 +3,7 @@ export interface IRenderSize{
     height:number;
 }
 
-type Position = {
+export type Position = {
     x:number;
     y:number;
 }
