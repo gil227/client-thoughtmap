@@ -6,7 +6,7 @@ import {storeNodes, storeSelectNode} from "@src/store/store.nodes.ts";
 import {canvasDrawDispatch} from "@src/canvas/canvas.draw.ts";
 import {utilNode, utilNodeMathRound} from "@src/utils/util.node.ts";
 import type {INodePatch} from "@src/interface/interface.api.ts";
-import {storeToolbar} from "@src/store/store.toolbar.ts";
+import {storeKeyboardCursor, storeToolbarCursor} from "@src/store/store.cursor.ts";
 
 interface IPointerCallback{
     onPatchHandler:({id,canvasId,changes}:INodePatch) => void;
@@ -21,31 +21,24 @@ export const canvasPointer = (canvas:HTMLCanvasElement,store:Store,{onPatchHandl
     let onPress = false;
     let nodeDragStart:{id:string,x:number,y:number}|null = null;
 
-    const cursorState = ()=>{
-        const toolbarState = store.get(storeToolbar);
-        if(toolbarState === 'make'){
-            canvas.style.cursor = "crosshair";
-        }else{
-            canvas.style.cursor = "default";
-        }
-    }
-
     const onSpacebarsDown = (e:KeyboardEvent) =>{
         if(e.code === 'Space'){
+            e.preventDefault();
             onPress = true;
-            canvas.style.cursor = "grab";
+            if(!e.repeat) store.set(storeKeyboardCursor,'space');
         }
     }
     const onSpacebarsUp = (e:KeyboardEvent) =>{
         if(e.code === 'Space'){
+            e.preventDefault();
             onPress = false;
-            canvas.style.cursor = "default";
+            if(!isPanning) store.set(storeKeyboardCursor,'default');
         }
     }
 
     const onPointerDown = (e:PointerEvent) => {
         const storeViewportState = store.get(storeViewport);
-        const toolbarState = store.get(storeToolbar);
+        const toolbarState = store.get(storeToolbarCursor);
         lastX = e.clientX;
         lastY = e.clientY;
 
@@ -72,7 +65,7 @@ export const canvasPointer = (canvas:HTMLCanvasElement,store:Store,{onPatchHandl
 
         //패닝 상태 및 마지막 위치 저장
         isPanning = true;
-        if(onPress) canvas.style.cursor = "grabbing";
+        if(onPress) store.set(storeKeyboardCursor,'panning');
     };
     const onPointerMove = (e:PointerEvent) => {
         if(!isPanning && !isDrag) return;
@@ -97,23 +90,28 @@ export const canvasPointer = (canvas:HTMLCanvasElement,store:Store,{onPatchHandl
         },viewportSize.width,viewportSize.height))
     };
     const onPointerUp = (e:PointerEvent) => {
+        const currentDragStartTiming = nodeDragStart;
         const selectNode = utilNode(store);
+        nodeDragStart = null;
+
         isPanning = false;
         isDrag = false;
         canvas.releasePointerCapture(e.pointerId);
-        if(!nodeDragStart || !selectNode || selectNode.id !== nodeDragStart.id) return;
+        if(onPress) {
+            store.set(storeKeyboardCursor,'space')
+        }else{
+            store.set(storeKeyboardCursor,'default')
+        }
+        if(!currentDragStartTiming || !selectNode || selectNode.id !== currentDragStartTiming.id) return;
 
-        const dragStartX = utilNodeMathRound(nodeDragStart.x);
-        const dragStartY = utilNodeMathRound(nodeDragStart.y);
+        const dragStartX = utilNodeMathRound(currentDragStartTiming.x);
+        const dragStartY = utilNodeMathRound(currentDragStartTiming.y);
         const nodeX = utilNodeMathRound(selectNode.positionX);
         const nodeY = utilNodeMathRound(selectNode.positionY);
         if(dragStartX !== nodeX || dragStartY !== nodeY){
             onPatchHandler({id:selectNode.id,canvasId:selectNode.canvasId,changes:{positionX:nodeX,positionY:nodeY}});
-            nodeDragStart = null;
         }
     };
-
-    cursorState();
 
     //클릭 드래그
     canvas.addEventListener('pointerdown', onPointerDown);

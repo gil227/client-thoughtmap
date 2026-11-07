@@ -20,4 +20,5 @@ export interface ICanvasViewportSize{
     height:number
 }
 
-export type Toolbar = 'select'|'make'
+export type Toolbar = 'select'|'make';
+export type keyboard = 'default'|'space'|'panning';

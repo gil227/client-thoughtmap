@@ -10,6 +10,7 @@ import {storeViewport, storeViewportSize} from "@src/store/store.viewport.ts";
 import {useStore} from "jotai";
 import {storeNodes, storeSelectNode} from "@src/store/store.nodes.ts";
 import type {IHooksNode} from "@src/interface/interface.api.ts";
+import {canvasCursor} from "@src/canvas/canvas.cursor.ts";
 
 export const useNodeDraw = (canvasRef:RefObject<HTMLCanvasElement|null>, canvasId:string, {onPatch,onDelete,onMake}:IHooksNode) =>{
     const store = useStore();
@@ -52,6 +53,7 @@ export const useNodeDraw = (canvasRef:RefObject<HTMLCanvasElement|null>, canvasI
         window.addEventListener("resize", onResizeHandler);
 
         const loop = () =>{
+            canvasCursor(store,canvas);
             const nodes = store.get(storeNodes);
             ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
             ctx.clearRect(0, 0, styleWidth, styleHeight);

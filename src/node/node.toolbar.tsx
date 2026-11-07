@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import {useEffect, useState} from "react";
 import {useStore} from "jotai";
-import {storeToolbar} from "@src/store/store.toolbar.ts";
+import {storeToolbarCursor} from "@src/store/store.cursor.ts";
 import {IconAddNode, IconSelect} from "@src/icon/icon.toolbar.tsx";
 
 const Wrapper = {
@@ -47,9 +47,9 @@ function NodeToolbar (){
 
     useEffect(() => {
         if(isOnMake){
-            store.set(storeToolbar,'make')
+            store.set(storeToolbarCursor,'make')
         }else{
-            store.set(storeToolbar,'select')
+            store.set(storeToolbarCursor,'select')
         }
     }, [isOnMake, isOnSelect, store]);
     return <>
