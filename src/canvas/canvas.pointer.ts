@@ -4,7 +4,7 @@ import {canvasClamp, canvasViewportToDashboard} from "@src/canvas/canvas.transfo
 import {canvasHitbox} from "@src/canvas/canvas.hitbox.ts";
 import {storeNodes, storeSelectNode} from "@src/store/store.nodes.ts";
 import {canvasDrawDispatch} from "@src/canvas/canvas.draw.ts";
-import {utilNode, utilNodeMathRound} from "@src/utils/util.node.ts";
+import {utilNode, utilNodeMathRound} from "@src/util/util.node.ts";
 import type {INodePatch} from "@src/interface/interface.api.ts";
 import {storeKeyboardCursor, storeToolbarCursor} from "@src/store/store.cursor.ts";
 
@@ -57,7 +57,7 @@ export const canvasPointer = (canvas:HTMLCanvasElement,store:Store,{onPatchHandl
             return;
         }
 
-        if(!onPress && toolbarState === 'make'){
+        if(!onPress && toolbarState !== 'select'){
             const {x:mouseX,y:mouseY} = canvasViewportToDashboard(storeViewportState,{x:e.offsetX,y:e.offsetY});
             onMakeHandler(mouseX,mouseY);
             return;
