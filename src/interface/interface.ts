@@ -1,3 +1,6 @@
+import type {TNode} from "@src/interface/interface.api.ts";
+import React from "react";
+
 export interface IRenderSize{
     width:number;
     height:number;
@@ -20,5 +23,7 @@ export interface ICanvasViewportSize{
     height:number
 }
 
-export type Toolbar = 'select'|'make';
+export type TToolbarState = {value:Toolbar,IconRC:React.FC}[];
+
+export type Toolbar = 'select'|TNode['type'];
 export type keyboard = 'default'|'space'|'panning';

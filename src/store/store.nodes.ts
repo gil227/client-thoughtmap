@@ -1,5 +1,5 @@
 import {atom} from "jotai";
-import type {INode} from "@src/interface/interface.api.ts";
+import type {TNode} from "@src/interface/interface.api.ts";
 
-export const storeNodes = atom<INode[]>([]);
+export const storeNodes = atom<TNode[]>([]);
 export const storeSelectNode = atom<string|null>(null);

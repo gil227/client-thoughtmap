@@ -1,4 +1,4 @@
-import type {INode} from "@src/interface/interface.api.ts";
+import type {TNode} from "@src/interface/interface.api.ts";
 
 
 /*
@@ -8,7 +8,7 @@ import type {INode} from "@src/interface/interface.api.ts";
 * @param mouseY 클릭한 마우스 y 값 (대시보드 기준)
 * @return 선택요소 or null
 * */
-export const canvasHitbox =(nodes:INode[],mouseX:number,mouseY:number)=>{
+export const canvasHitbox =(nodes:TNode[],mouseX:number,mouseY:number)=>{
     for(let i=0;i<nodes.length;i++){
         const node = nodes[i];
         const isPositionX = node.positionX <= mouseX && mouseX <=node.positionX + node.width;
