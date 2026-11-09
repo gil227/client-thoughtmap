@@ -11,7 +11,7 @@ export const canvasCursor = (store:Store,canvas:HTMLCanvasElement)=>{
         canvas.style.cursor = 'grab';
     }else if(cursorToolbar === 'select'){
         canvas.style.cursor = 'default';
-    }else if(cursorToolbar === 'make'){
+    }else{
         canvas.style.cursor = 'crosshair';
     }
 }

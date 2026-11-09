@@ -1,8 +1,9 @@
 import styled from "@emotion/styled";
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import {useStore} from "jotai";
 import {storeToolbarCursor} from "@src/store/store.cursor.ts";
-import {IconAddNode, IconSelect} from "@src/icon/icon.toolbar.tsx";
+import {IconNodeImage, IconNodeList, IconNodeText, IconSelect} from "@src/icon/icon.toolbar.tsx";
+import type {TToolbarState} from "@src/interface/interface.ts";
 
 const Wrapper = {
     Div:styled.div({
@@ -41,21 +42,38 @@ const Icon = {
 }
 
 function NodeToolbar (){
-    const [isOnMake,setIsOnMake] = useState<boolean>(false);
-    const [isOnSelect,setIsOnSelect] = useState<boolean>(true);
+    const toolbarIcon:TToolbarState = [
+        {value:'select',IconRC:IconSelect},
+        {value:'text',IconRC:IconNodeText},
+        {value:'list',IconRC:IconNodeList},
+        {value:'image',IconRC:IconNodeImage},
+    ]
+
+    const [activeIndex, setActiveIndex] = useState<number>(0);
     const store = useStore();
 
-    useEffect(() => {
+    /*useEffect(() => {
         if(isOnMake){
             store.set(storeToolbarCursor,'make')
         }else{
             store.set(storeToolbarCursor,'select')
         }
-    }, [isOnMake, isOnSelect, store]);
+    }, [isOnMake, isOnSelect, store]);*/
     return <>
         <Wrapper.Div>
             <Wrapper.Ul>
-                <Wrapper.Li>
+                {toolbarIcon.map(({value,IconRC},index)=>{
+                    return <Wrapper.Li key={value}>
+                        <Icon.Button onClick={()=>{
+                            setActiveIndex(index);
+                            store.set(storeToolbarCursor,value);
+                        }} isActive={activeIndex === index}>
+                            <IconRC/>
+                        </Icon.Button>
+                    </Wrapper.Li>
+                })}
+
+                {/*<Wrapper.Li>
                     <Icon.Button onClick={()=>{
                         setIsOnSelect((prev)=>{
                             if(!prev) setIsOnMake(false);
@@ -74,7 +92,7 @@ function NodeToolbar (){
                 }} isActive={isOnMake}>
                         <IconAddNode/>
                     </Icon.Button>
-                </Wrapper.Li>
+                </Wrapper.Li>*/}
             </Wrapper.Ul>
         </Wrapper.Div>
     </>

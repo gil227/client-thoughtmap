@@ -18,9 +18,29 @@ export const IconSelect = (props: SVGProps<SVGSVGElement>) => (
     </svg>
 );
 
-export const IconAddNode = (props: SVGProps<SVGSVGElement>) => (
+export const IconNodeText = (props: SVGProps<SVGSVGElement>) => (
     <svg {...base} {...props}>
-        <rect x="3" y="4" width="13" height="10.5" rx="2.5" />
-        <path d="M6.5 8h6M6.5 11h3.5M18.5 16v5M16 18.5h5" />
+        <path d="M5 6V5h14v1" />
+        <path d="M12 5v14" />
+        <path d="M9 19h6" />
+    </svg>
+);
+
+export const IconNodeList = (props: SVGProps<SVGSVGElement>) => (
+    <svg {...base} {...props}>
+        <circle cx="5" cy="7" r="1" fill="currentColor" />
+        <circle cx="5" cy="12" r="1" fill="currentColor" />
+        <circle cx="5" cy="17" r="1" fill="currentColor" />
+        <path d="M9 7h11" />
+        <path d="M9 12h11" />
+        <path d="M9 17h11" />
+    </svg>
+);
+
+export const IconNodeImage = (props: SVGProps<SVGSVGElement>) => (
+    <svg {...base} {...props}>
+        <rect x="3.5" y="4.5" width="17" height="15" rx="2.5" />
+        <circle cx="9" cy="10" r="1.6" />
+        <path d="M20.5 15.5l-4.5-4.5L6 19.5" />
     </svg>
 );
