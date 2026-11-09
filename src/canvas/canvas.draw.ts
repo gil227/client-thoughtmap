@@ -1,9 +1,9 @@
-import type {INode} from "@src/interface/interface.api.ts";
+import type {TNode} from "@src/interface/interface.api.ts";
 import {type Store} from "jotai";
 import {storeNodes} from "@src/store/store.nodes.ts";
-import {utilNode} from "@src/utils/util.node.ts";
+import {utilNode} from "@src/util/util.node.ts";
 
-export const canvasDraw = (ctx:CanvasRenderingContext2D,node:INode,isSelect:boolean) =>{
+export const canvasDraw = (ctx:CanvasRenderingContext2D,node:TNode,isSelect:boolean) =>{
     ctx.fillStyle = '#ccc';
     ctx.fillRect(node.positionX,node.positionY,node.width,node.height);
     ctx.fillStyle = '#000';
@@ -13,7 +13,7 @@ export const canvasDraw = (ctx:CanvasRenderingContext2D,node:INode,isSelect:bool
         ctx.strokeStyle = 'blue';
         ctx.strokeRect(node.positionX,node.positionY,node.width,node.height);
     }
-    ctx.fillText(node.content,node.positionX + 2,node.positionY+10);
+    ctx.fillText(node.content.title,node.positionX + 2,node.positionY+10);
 }
 
 export const canvasDrawDispatch = (store:Store,nodeId:string,moveX:number,moveY:number)=>{
