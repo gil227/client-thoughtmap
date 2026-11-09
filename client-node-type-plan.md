@@ -120,20 +120,20 @@ A로 하게되면 통으로된 문자열이라서 올바른 값인지 판단이 
 ## 1단계 체크리스트
 
 ### 서버
-- [ ] type enum에 `list` 추가 (entity + DB)
-- [ ] content 컬럼 변경 마이그레이션 (005 결정 시)
-- [ ] 기존 데이터 변환 또는 초기화
-- [ ] DTO 검증 (type, content 구조)
-- [ ] 배포 후 세 타입 생성/조회/수정 확인
+- [X] type enum에 `list` 추가 (entity + DB)
+- [X] content 컬럼 변경 마이그레이션 (005 결정 시)
+- [X] 기존 데이터 변환 또는 초기화
+- [X] DTO 검증 (type, content 구조)
+- [X] 배포 후 세 타입 생성/조회/수정 확인
 
 ### 클라이언트 타입
-- [ ] TNode → 타입별 구분 유니온
+- [X] TNode → 타입별 구분 유니온
 - [ ] TNodeEditable / INodePatch content 확인 (전체 교체 방식)
-- [ ] constant에 크기 값 추가
+- [X] constant에 크기 값 추가
 
 ### 생성 흐름
-- [ ] 타입별 기본값 함수 (content, width, height)
-- [ ] 툴바 make에서 타입 선택 방식 결정
+- [X] 타입별 기본값 함수 (content, width, height)
+- [X] 툴바 make에서 타입 선택 방식 결정
 - [ ] onMake에 type 전달
 
 ### 확인
