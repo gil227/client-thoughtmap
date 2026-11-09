@@ -35,3 +35,13 @@ export const QUERY_KEY={
     CANVAS_DISPATCH:'canvasDispatched',
     CANVAS_NODES:(canvasId:string)=>['canvasNodes',canvasId],
 }
+
+export const NODE = {
+    WIDTH_PRESET:(type:'S'|'L')=> {
+        if(type === 'S') return 120;
+        return 300
+    },
+    PADDING:10,
+    MIN_HEIGHT:100,
+    MAX_HEIGHT:500
+}
