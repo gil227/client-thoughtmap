@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import React, {useState} from "react";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import WithCredentialFetch from "@src/utils/utils.credential.fetch.ts";
+import WithCredentialFetch from "@src/util/util.credential.fetch.ts";
 import {API_PASS, QUERY_KEY} from "@src/constant/constant.ts";
 
 const S = {
