@@ -5,7 +5,7 @@ import CanvasCreate from "@src/canvas/canvas.create.tsx";
 import CanvasSnbItem from "@src/canvas/canvas.snb.item.tsx";
 import {API_PASS, CLIENT_SNB, QUERY_KEY} from "@src/constant/constant.ts";
 import {useQuery} from "@tanstack/react-query";
-import WithCredentialFetch from "@src/utils/utils.credential.fetch.ts";
+import WithCredentialFetch from "@src/util/util.credential.fetch.ts";
 import {ComponentsApiError} from "@src/components/api/components.api.error.tsx";
 import {ComponentsApiLoading} from "@src/components/api/components.api.loading.tsx";
 
