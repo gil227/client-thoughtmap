@@ -1,9 +1,9 @@
 import type {Store} from "jotai";
-import type {INode} from "@src/interface/interface.api.ts";
-import {utilNode} from "@src/utils/util.node.ts";
+import type {TNode} from "@src/interface/interface.api.ts";
+import {utilNode} from "@src/util/util.node.ts";
 
 interface ICallback {
-    onDeleteHandler: (node:INode) => void;
+    onDeleteHandler: (node:TNode) => void;
 }
 
 export const canvasKeyboard = (store:Store,{onDeleteHandler}:ICallback) =>{
