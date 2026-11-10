@@ -5,6 +5,13 @@ import {storeToolbarCursor} from "@src/store/store.cursor.ts";
 import {IconNodeImage, IconNodeList, IconNodeText, IconSelect} from "@src/icon/icon.toolbar.tsx";
 import type {TToolbarState} from "@src/interface/interface.ts";
 
+const toolbarIcon:TToolbarState = [
+    {value:'select',IconRC:IconSelect},
+    {value:'text',IconRC:IconNodeText},
+    {value:'list',IconRC:IconNodeList},
+    {value:'image',IconRC:IconNodeImage},
+]
+
 const Wrapper = {
     Div:styled.div({
         position: 'absolute',
@@ -29,36 +36,26 @@ const Wrapper = {
 }
 
 const Icon = {
-    Button:styled.button<{isActive:boolean}>(({isActive})=>({
+    Button:styled.button<{isActive:boolean,isListType:boolean}>(({isActive,isListType})=>({
         display: 'block',
         padding:'3px',
         backgroundColor:isActive ? '#8B5CF6':'#1F1F26',
         pointerEvents: 'auto',
         borderRadius:'4px',
         svg:{
-            stroke:isActive ? '#fff':'#565660'
+            stroke:isActive ? '#fff':'#565660',
+            circle:{
+                fill:isListType && isActive ? '#fff' : isListType ? '#565660':'none',
+            }
         }
     }))
 }
 
 function NodeToolbar (){
-    const toolbarIcon:TToolbarState = [
-        {value:'select',IconRC:IconSelect},
-        {value:'text',IconRC:IconNodeText},
-        {value:'list',IconRC:IconNodeList},
-        {value:'image',IconRC:IconNodeImage},
-    ]
 
     const [activeIndex, setActiveIndex] = useState<number>(0);
     const store = useStore();
 
-    /*useEffect(() => {
-        if(isOnMake){
-            store.set(storeToolbarCursor,'make')
-        }else{
-            store.set(storeToolbarCursor,'select')
-        }
-    }, [isOnMake, isOnSelect, store]);*/
     return <>
         <Wrapper.Div>
             <Wrapper.Ul>
@@ -67,32 +64,11 @@ function NodeToolbar (){
                         <Icon.Button onClick={()=>{
                             setActiveIndex(index);
                             store.set(storeToolbarCursor,value);
-                        }} isActive={activeIndex === index}>
+                        }} isActive={activeIndex === index} isListType={value === 'list'}>
                             <IconRC/>
                         </Icon.Button>
                     </Wrapper.Li>
                 })}
-
-                {/*<Wrapper.Li>
-                    <Icon.Button onClick={()=>{
-                        setIsOnSelect((prev)=>{
-                            if(!prev) setIsOnMake(false);
-                            return !prev;
-                        })
-                    }} isActive={isOnSelect}>
-                        <IconSelect/>
-                    </Icon.Button>
-                </Wrapper.Li>
-                <Wrapper.Li>
-                    <Icon.Button onClick={()=>{
-                    setIsOnMake((prev)=>{
-                        if(!prev) setIsOnSelect(false);
-                        return !prev;
-                    })
-                }} isActive={isOnMake}>
-                        <IconAddNode/>
-                    </Icon.Button>
-                </Wrapper.Li>*/}
             </Wrapper.Ul>
         </Wrapper.Div>
     </>
