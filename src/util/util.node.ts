@@ -27,7 +27,11 @@ export const utilNodeMathRound =(v:number)=>{
     return Math.round(v*10)/10;
 };
 
-export const utilNodeBaseValue = (type:TNode['type']):TNodeMake=>{
+
+/*
+* 노드생성 기본값
+* */
+export const utilNodeBaseValue = (type:TNodeMake['type']):TNodeMake=>{
     const baseSize:INodeMakeBase = {
         width:NODE.WIDTH_PRESET('S'),
         height:NODE.MIN_HEIGHT

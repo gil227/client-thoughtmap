@@ -1,7 +1,8 @@
 import {API_PASS, QUERY_KEY} from "@src/constant/constant.ts";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import type {TNode, INodePatch} from "@src/interface/interface.api.ts";
+import type {TNode, INodePatch, TNodeMake} from "@src/interface/interface.api.ts";
 import WithCredentialFetch from "@src/util/util.credential.fetch.ts";
+import {utilNodeBaseValue} from "@src/util/util.node.ts";
 
 export const useNodeMutate = () =>{
     const queryClient = useQueryClient();
@@ -38,16 +39,13 @@ export const useNodeMutate = () =>{
     }))
 
     const {mutate:onMakeNode} = useMutation(({
-        mutationFn:async ({x,y,canvasId}:{x:number,y:number,canvasId:string}):Promise<TNode> =>{
+        mutationFn:async ({x,y,canvasId,type}:{x:number,y:number,canvasId:string,type:TNodeMake['type']}):Promise<TNode> =>{
             const makeRes = await WithCredentialFetch(`${API_PASS.CANVAS_LIST}/${canvasId}/nodes`,{
                 method:'POST',
                 body:JSON.stringify({
-                    type: 'text',
-                    content: {title:'make test',body:'test body'},
+                    ...utilNodeBaseValue(type),
                     positionX: x,
-                    positionY: y,
-                    width: 400,
-                    height: 200
+                    positionY: y
                 })
             });
             if(!makeRes.ok) throw new Error('노드 추가 실패')
