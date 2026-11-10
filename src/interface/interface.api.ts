@@ -77,5 +77,5 @@ export interface INodePatch {
 export interface IHooksNode{
     onPatch:({id, canvasId, changes}:INodePatch)=>void;
     onDelete:(node:TNode)=>void;
-    onMake:({x,y,canvasId}:{x:number,y:number,canvasId:string})=>void;
+    onMake:({x,y,canvasId,type}:{x:number,y:number,canvasId:string,type:TNodeMake['type']})=>void;
 }

@@ -43,5 +43,6 @@ export const NODE = {
     },
     PADDING:10,
     MIN_HEIGHT:100,
-    MAX_HEIGHT:500
+    MAX_HEIGHT:500,
+    ROUND:5
 }

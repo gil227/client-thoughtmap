@@ -21,7 +21,7 @@ export const useNodeDraw = (canvasRef:RefObject<HTMLCanvasElement|null>, canvasI
         if(!ctx || !canvas) return;
         const onPanning = canvasPointer(canvas,store,{
             onPatchHandler:({id,canvasId,changes})=> onPatch({id,canvasId,changes}),
-            onMakeHandler:(x,y)=> onMake({x,y,canvasId})
+            onMakeHandler:(x,y,type)=> onMake({x,y,canvasId,type})
         });
         const onWheel = canvasWheel(canvas,store);
         const onKeyDown = canvasKeyboard(store,{

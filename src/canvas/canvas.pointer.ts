@@ -5,12 +5,12 @@ import {canvasHitbox} from "@src/canvas/canvas.hitbox.ts";
 import {storeNodes, storeSelectNode} from "@src/store/store.nodes.ts";
 import {canvasDrawDispatch} from "@src/canvas/canvas.draw.ts";
 import {utilNode, utilNodeMathRound} from "@src/util/util.node.ts";
-import type {INodePatch} from "@src/interface/interface.api.ts";
+import type {INodePatch, TNodeMake} from "@src/interface/interface.api.ts";
 import {storeKeyboardCursor, storeToolbarCursor} from "@src/store/store.cursor.ts";
 
 interface IPointerCallback{
     onPatchHandler:({id,canvasId,changes}:INodePatch) => void;
-    onMakeHandler:(x:number,y:number) => void;
+    onMakeHandler:(x:number,y:number,type:TNodeMake['type']) => void;
 }
 
 export const canvasPointer = (canvas:HTMLCanvasElement,store:Store,{onPatchHandler,onMakeHandler}:IPointerCallback)=>{
@@ -59,7 +59,7 @@ export const canvasPointer = (canvas:HTMLCanvasElement,store:Store,{onPatchHandl
 
         if(!onPress && toolbarState !== 'select'){
             const {x:mouseX,y:mouseY} = canvasViewportToDashboard(storeViewportState,{x:e.offsetX,y:e.offsetY});
-            onMakeHandler(mouseX,mouseY);
+            onMakeHandler(mouseX,mouseY,toolbarState);
             return;
         }
 
