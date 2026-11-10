@@ -1,7 +1,6 @@
 # Thoughtmap 설계 결정 기록
 
 > 형식: 문제 → 선택지 → 결정 → 이유
-> 나중에 README 기술 회고의 원재료로 사용
 
 ---
 
@@ -128,16 +127,112 @@ A로 하게되면 통으로된 문자열이라서 올바른 값인지 판단이 
 
 ### 클라이언트 타입
 - [X] TNode → 타입별 구분 유니온
-- [ ] TNodeEditable / INodePatch content 확인 (전체 교체 방식)
+- [X] TNodeEditable / INodePatch content 확인 (전체 교체 방식)
 - [X] constant에 크기 값 추가
 
 ### 생성 흐름
 - [X] 타입별 기본값 함수 (content, width, height)
 - [X] 툴바 make에서 타입 선택 방식 결정
-- [ ] onMake에 type 전달
+- [X] onMake에 type 전달
 
 ### 확인
-- [ ] 세 타입 생성 후 새로고침해도 유지되는지 (Network 탭에서 type/content 확인)
+- [X] 세 타입 생성 후 새로고침해도 유지되는지 (Network 탭에서 type/content 확인)
+
+---
+
+## 006. 노드 그리기 구조 (2단계)
+
+- 상태: 미정
+
+### 문제
+타입별로 그리는 모양이 달라지면서 canvasDraw 한 함수에 다 넣으면 파일이 계속 커짐.
+
+### 선택지
+- (a) canvasDraw 하나에 type 분기 전부 작성
+- (b) 공통(카드 배경·테두리·선택 표시) + 타입별 내용 그리기 파일 분리 (추천)
+    - canvasDraw: 카드 그리고 → node.type으로 switch → 타입별 함수 호출
+    - canvas.draw.text.ts / canvas.draw.list.ts / canvas.draw.image.ts
+
+### 결정
+
+### 이유
+
+---
+
+## 007. 노드 스타일 값
+
+- 상태: 미정
+
+### 정할 것 (constant에 모을 것)
+- 카드 배경색 / 테두리색 / 선택 테두리색
+- 모서리 둥글기 (roundRect)
+- 폰트: 제목 크기·굵기 / 본문 크기 / 폰트 패밀리
+- 줄 높이(px) ← 004에서 미정
+- 최소 높이 (줄 높이 × 3 + 패딩)
+- 그림자 사용 여부 (shadowBlur는 비쌈 → 안 쓰거나 아주 약하게)
+
+### 결정
+
+---
+
+## 008. 세로 자동 높이 계산 시점
+
+- 상태: 미정
+
+### 문제
+measureText로 줄바꿈을 계산하는데, 매 프레임 하면 비쌈.
+
+### 선택지
+- (a) 매 프레임 계산 (간단, 느림)
+- (b) content/width 바뀔 때만 계산하고 결과(줄 목록, 높이) 캐시 (추천, dirty flag)
+
+### 결정
+
+### 영향
+- 계산된 height를 PATCH로 저장할지 → 004 메모(저장 추천)
+
+---
+
+## 2단계 체크리스트: 타입별 디자인
+
+### 준비
+- [ ] 006 / 007 / 008 결정
+- [ ] ctx.font 수정 (지금 '20px'는 폰트 패밀리가 없어서 무시되고 기본 10px로 그려짐 → '600 14px Pretendard, sans-serif' 형태)
+
+### 공통 카드
+- [ ] roundRect로 카드 배경 + 테두리
+- [ ] 선택 시 테두리 강조
+- [ ] 제목 그리기 (공통: 모든 타입이 title 가짐)
+
+### 텍스트 줄바꿈 유틸
+- [ ] measureText 기반 줄바꿈 함수 (가로 폭 → 줄 배열)
+- [ ] 최대 높이 넘으면 마지막 줄 말줄임(…)
+- [ ] 결과 캐시 (008)
+
+### 타입별 내용
+- [ ] text: 제목 + 본문 (본문 없으면 회색 안내 문구, 데이터엔 저장 안 함)
+- [ ] list: 제목 + 항목 줄들 (label 왼쪽, value 오른쪽 정렬)
+- [ ] image: 제목 + 이미지
+    - [ ] 이미지 로드 캐시 (url → HTMLImageElement, 로딩 중엔 회색 박스)
+    - [ ] 로드 후 실제 비율로 ratio 갱신
+
+### 높이
+- [ ] 내용 기반 높이 계산 → 노드 height에 반영
+- [ ] 히트 테스트가 새 높이 기준으로 동작하는지 확인
+
+### 확인
+- [ ] 세 타입 각각 짧은 / 긴 내용으로 줄바꿈·말줄임 확인
+- [ ] 줌 인/아웃에서 글자 선명한지 (DPR)
+- [ ] 노드 100개 이상에서 프레임 확인 (Performance 탭)
+
+---
+
+## 다음 단계 미리보기
+
+- 3단계: 우클릭 메뉴 (수정 / 삭제 / 연결) + 텍스트 편집 오버레이(textarea) + 엣지 그리기
+    - 시작 전 필수: 스페이스·Delete 키 input/textarea 예외 처리
+    - TNodeChanges에 content? / width? / height? 추가, 전부 선택 속성으로
+- 4단계: undo / redo
 
 ---
 
@@ -153,3 +248,9 @@ A로 하게되면 통으로된 문자열이라서 올바른 값인지 판단이 
 - 커서: loop 내 매 프레임 대입 → 값 변경 시에만 또는 store.sub
 - 이름: storeToolbarCursor → storeToolbar, 타입명 PascalCase 통일
 - 접근성: 툴바 aria-label, canvas role/label, live region (나중에)
+- 이미지: 캔버스 PNG 내보내기 기능 만들면 외부 이미지 CORS 문제 → crossOrigin 설정 필요
+- 004 정리: 가로 결정 문구를 "S(120) / L(300) 프리셋"으로 통일, 줄 높이·최소 높이 분리 (007에서 같이)
+- 서버: PATCH/DELETE가 캔버스 주인 확인 안 함 (다른 사람 노드 수정 가능) → 마감 전 수정
+- 서버: synchronize: true 운영 사용 → 마감 전 마이그레이션 방식 고려
+- 서버: CORS에 Vercel 도메인 추가 (배포 시)
+- 배포: Supabase 무료 플랜 7일 미사용 시 일시정지, Render 무료 플랜 슬립 → 지원 기간엔 주기적 호출로 깨워두기
