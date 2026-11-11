@@ -1,3 +1,11 @@
+@font-face {
+    font-family: 'Pretendard Variable';
+    font-weight: 45 920;
+    font-style: normal;
+    font-display: swap;
+    src: url('@src/font/PretendardVariable.woff2') format('woff2-variations');
+}
+
 *, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
@@ -6,7 +14,8 @@
 
 html, body, #root {
     height: 100%;
-    background-color: #353535;
+    background-color: #131318;
+    font-family: 'Pretendard Variable', sans-serif;
 }
 
 body {
@@ -39,4 +48,5 @@ a {
 
 canvas {
     overscroll-behavior: none;
+    background-color:#0E0E13;
 }
