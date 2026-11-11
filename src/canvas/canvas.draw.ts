@@ -4,20 +4,33 @@ import {storeNodes} from "@src/store/store.nodes.ts";
 import {utilNode} from "@src/util/util.node.ts";
 import {canvasTypeText} from "@src/canvas/type/canvas.type.text.ts";
 import {NODE} from "@src/constant/constant.ts";
+import {storeViewport} from "@src/store/store.viewport.ts";
 
-export const canvasDraw = (ctx:CanvasRenderingContext2D,node:TNode,isSelect:boolean) =>{
+interface ICanvasDraw {
+    ctx:CanvasRenderingContext2D,
+    node:TNode,
+    isSelect:boolean,
+    store:Store
+}
+
+export const canvasDraw = ({ctx, node, isSelect, store}:ICanvasDraw) =>{
     const minX = node.positionX+NODE.PADDING;
     const minY = node.positionY+NODE.PADDING;
+    const viewport = store.get(storeViewport);
     ctx.beginPath();
-    ctx.fillStyle = '#ccc';
+
+    //노드 기본컬러
+    ctx.fillStyle = '#1C1C21';
     ctx.roundRect(node.positionX,node.positionY,node.width,node.height,NODE.ROUND);
     ctx.fill();
-    ctx.fillStyle = '#000';
-    ctx.font = '20px';
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = '#2C2C33';
+    ctx.stroke();
 
     if(isSelect){
-        ctx.strokeStyle = 'blue';
-        ctx.strokeRect(node.positionX,node.positionY,node.width,node.height);
+        ctx.lineWidth = 2/viewport.scale;
+        ctx.strokeStyle = 'rgb(0 159 255)';
+        ctx.strokeRect(node.positionX-0.2,node.positionY-0.2,node.width+0.2,node.height+0.2);
     }
 
     if(node.type === 'text'){

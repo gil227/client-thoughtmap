@@ -38,11 +38,18 @@ export const QUERY_KEY={
 
 export const NODE = {
     WIDTH_PRESET:(type:'S'|'L')=> {
-        if(type === 'S') return 120;
-        return 300
+        if(type === 'S') return 200;
+        return 320
     },
-    PADDING:10,
+    PADDING:16,
     MIN_HEIGHT:100,
     MAX_HEIGHT:500,
-    ROUND:5
+    ROUND:5,
+    FONT_FAMILY:'Pretendard Variable, sans-serif',
+    FONT_LETTER_SPACING:'-0.08em',
+    FONT_LINE_HEIGHT:20,
+    FONT_TITLE:'600 15px',
+    FONT_TEXT:'400 13px',
+    FONT_COLOR_TITLE:'#F4F4F5',
+    FONT_COLOR_TEXT:'#A1A1AA',
 }
