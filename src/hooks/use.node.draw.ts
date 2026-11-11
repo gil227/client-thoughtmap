@@ -65,7 +65,7 @@ export const useNodeDraw = (canvasRef:RefObject<HTMLCanvasElement|null>, canvasI
             ctx.setTransform(dpr*getCurrentViewport.scale, 0, 0, dpr*getCurrentViewport.scale, getTransformPosition.x*dpr, getTransformPosition.y*dpr);
 
             const selectedNode = store.get(storeSelectNode);
-            nodes.forEach((node)=> canvasDraw(ctx,node, node.id === selectedNode))
+            nodes.forEach((node)=> canvasDraw({ctx, node, isSelect:node.id === selectedNode,store}))
 
             canvasRuler({ctx,dpr,viewport:getCurrentViewport,dashboard:getRulerEndPosition});
             frame = requestAnimationFrame(loop);
