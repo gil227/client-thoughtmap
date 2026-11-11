@@ -3,14 +3,14 @@ import {useMutation, useQueryClient} from "@tanstack/react-query";
 import WithCredentialFetch from "@src/util/util.credential.fetch.ts";
 import {API_PASS, CLIENT_PASS, QUERY_KEY} from "@src/constant/constant.ts";
 import {useState} from "react";
-import {Link} from "react-router";
+import { NavLink} from "react-router";
 
 interface IProps {
     id:string;
     title:string;
 }
 
-const ItemLinkStyled = styled(Link)`
+const ItemLinkStyled = styled(NavLink)`
     display: block;
     padding: 1em;
 `;
@@ -19,8 +19,21 @@ const S = {
     item:styled.li({
         listStyle:'none',
         margin:0,
-        border:'1px solid #ccc'
-
+        position:"relative",
+        ':after':{
+            content:'""',
+            display:'block',
+            position:'absolute',
+            left:0,
+            top:0,
+            width:'5px',
+            height:'100%',
+            background:'#8B5CF6',
+            opacity:0,
+        },
+        "&:has(> a.active):after":{
+            opacity:1,
+        }
     }),
     iconContainer:styled.ul({
         gap:'10px',

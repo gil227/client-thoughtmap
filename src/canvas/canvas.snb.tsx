@@ -13,7 +13,6 @@ const S = {
     Section:styled.section({
         flex:`0 0 ${CLIENT_SNB.WIDTH}px`,
         height:'100vh',
-        borderRight:'2px solid #ccc'
     }),
     ListWrap:styled.ul({
         padding:0
@@ -35,6 +34,7 @@ function CanvasSnb(){
         },
         staleTime:10_000
     })
+    // const currentCanvas = store.get(store)
     if(error){
         return <ComponentsApiError/>
     }
