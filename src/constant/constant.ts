@@ -42,14 +42,20 @@ export const NODE = {
         return 320
     },
     PADDING:16,
+    BASE_BG:'#1C1C21',
+    BASE_BORDER_COLOR:'#2C2C33',
     MIN_HEIGHT:100,
     MAX_HEIGHT:500,
+    TYPE_IMAGE_BASE_HEIGHT:250,
     ROUND:5,
+    MAX_TEXT_LINE:4,
     FONT_FAMILY:'Pretendard Variable, sans-serif',
     FONT_LETTER_SPACING:'-0.08em',
-    FONT_LINE_HEIGHT:20,
+    FONT_LINE_HEIGHT:22,
     FONT_TITLE:'600 15px',
     FONT_TEXT:'400 13px',
+    FONT_TITLE_TEXT_SPACING:5,
     FONT_COLOR_TITLE:'#F4F4F5',
     FONT_COLOR_TEXT:'#A1A1AA',
-}
+    LINE_COLOR:'#27272D',
+} as const
