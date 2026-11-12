@@ -27,3 +27,15 @@ export type TToolbarState = {value:Toolbar,IconRC:React.FC}[];
 
 export type Toolbar = 'select'|TNode['type'];
 export type keyboard = 'default'|'space'|'panning';
+
+export type TImageLoad = {status:'loaded',img:HTMLImageElement} | {status:'loading',img:HTMLImageElement} | {status:'error'}
+
+export interface ITextStartXY{
+    minX:number;
+    minY:number;
+}
+
+export interface IWordBreak{
+    maxWidth:number;
+    maxLineNumber:number;
+}
