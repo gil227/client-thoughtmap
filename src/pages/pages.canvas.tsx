@@ -11,6 +11,8 @@ const S = {
         flexDirection:'column',
         alignItems:'center',
         justifyContent:'center',
+        backgroundColor:'#0E0E13',
+        color:'#F4F4F5'
     })
 }
 
