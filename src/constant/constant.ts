@@ -58,4 +58,5 @@ export const NODE = {
     FONT_COLOR_TITLE:'#F4F4F5',
     FONT_COLOR_TEXT:'#A1A1AA',
     LINE_COLOR:'#27272D',
+    ICON_SIZE:14
 } as const
