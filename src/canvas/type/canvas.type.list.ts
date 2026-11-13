@@ -1,6 +1,7 @@
 import {NODE} from "@src/constant/constant.ts";
 import type {TNodeList} from "@src/interface/interface.api.ts";
 import type {ITextStartXY} from "@src/interface/interface.ts";
+import {utilNodeIcon} from "@src/util/util.node.ts";
 
 export const canvasTypeList = (ctx: CanvasRenderingContext2D,node:TNodeList,{minX,minY}:ITextStartXY) => {
     const bodyY = minY+NODE.FONT_LINE_HEIGHT+NODE.FONT_TITLE_TEXT_SPACING;
@@ -8,6 +9,9 @@ export const canvasTypeList = (ctx: CanvasRenderingContext2D,node:TNodeList,{min
 
     //제목
     ctx.fillText(node.content.title,minX,minY);
+
+    //아이콘
+    utilNodeIcon(ctx,node);
 
     //본문
     node.content.items.forEach((item,i)=>{

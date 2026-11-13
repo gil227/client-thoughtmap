@@ -1,6 +1,6 @@
 import type {TNodeText} from "@src/interface/interface.api.ts";
 import {NODE} from "@src/constant/constant.ts";
-import {utilNodeWordBreak} from "@src/util/util.node.ts";
+import {utilNodeIcon, utilNodeWordBreak} from "@src/util/util.node.ts";
 import type {ITextStartXY} from "@src/interface/interface.ts";
 
 export const canvasTypeText = (ctx:CanvasRenderingContext2D,node:TNodeText,{minX,minY}:ITextStartXY) =>{
@@ -10,6 +10,10 @@ export const canvasTypeText = (ctx:CanvasRenderingContext2D,node:TNodeText,{minX
 
     //제목
     ctx.fillText(node.content.title,titleX,titleY);
+
+    //아이콘
+    utilNodeIcon(ctx,node);
+
 
     //본문
     if(!node.content.body) return;
