@@ -6,7 +6,7 @@ import type {
     INodeMakeBase
 } from "@src/interface/interface.api.ts";
 import {NODE} from "@src/constant/constant.ts";
-import type {IWordBreak, TImageLoad} from "@src/interface/interface.ts";
+import type {IDrawImage, IWordBreak, TImageLoad} from "@src/interface/interface.ts";
 
 /*
 * 노드 id값으로 선택된 노드 객체 전체를 반환하는 함수
@@ -158,6 +158,56 @@ export const utilNodeImageLoad = (url:string) =>{
     img.onerror = ()=> imageCache.set(url,{status:'error'});
     img.src = url;
 
-    console.log('img',img);
     return imageCache.get(url);
+}
+
+/*
+* 이미지 크롭 후 drawImage 함수
+* */
+export const utilNodeDrawImage = ({ctx,imgEl,dx,dy,dw,dh}:IDrawImage) =>{
+  if(!imgEl || imgEl.status !== 'loaded') return;
+  const imgDom = imgEl.img;
+  const imgNW = imgDom.naturalWidth;
+  const imgNH = imgDom.naturalHeight;
+  const imgWidthRatio = dw/imgNW;
+  const imgHeightRatio = dh/imgNH;
+
+  const ratio = Math.max(imgWidthRatio,imgHeightRatio);
+
+  const viewportWidth = dw/ratio;
+  const viewportHeight = dh/ratio;
+
+  const viewportX = (imgNW - viewportWidth)/2;
+  const viewportY = (imgNH - viewportHeight)/2;
+
+  ctx.drawImage(imgDom,viewportX,viewportY,viewportWidth,viewportHeight,dx,dy,dw,dh);
+}
+
+/*
+* 노드타입별 아이콘 드로우 함수
+* */
+const nodeIcon = {
+    text:  new Path2D('M5 6V5h14v1 M12 5v14 M9 19h6'),
+    list:  new Path2D('M9 6h11 M9 12h11 M9 18h11 M4.5 6h.01 M4.5 12h.01 M4.5 18h.01'),
+    image: new Path2D(
+        'M6 4.5h12a2.5 2.5 0 0 1 2.5 2.5v10a2.5 2.5 0 0 1-2.5 2.5H6A2.5 2.5 0 0 1 3.5 17V7A2.5 2.5 0 0 1 6 4.5z' +
+        ' M10.5 10a1.5 1.5 0 1 1-3 0a1.5 1.5 0 1 1 3 0z' +
+        ' M20.5 15.5l-4.5-4.5L6 19.5'
+    ),
+}
+
+export const utilNodeIcon = (ctx:CanvasRenderingContext2D,node:TNode) =>{
+    const iconX = node.positionX + node.width - NODE.PADDING*2
+    const iconY = node.positionY + NODE.PADDING*2 - NODE.FONT_LINE_HEIGHT/2 - NODE.ICON_SIZE/4;
+
+    //아이콘그리기
+    ctx.save();
+    ctx.translate(iconX,iconY);
+    ctx.scale(NODE.ICON_SIZE/24,NODE.ICON_SIZE/24);
+    ctx.strokeStyle = '#8E8E98';
+    ctx.lineWidth = 2.2;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.stroke(nodeIcon[node.type]);
+    ctx.restore();
 }
