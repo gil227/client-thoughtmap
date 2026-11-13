@@ -39,3 +39,12 @@ export interface IWordBreak{
     maxWidth:number;
     maxLineNumber:number;
 }
+
+export interface IDrawImage{
+    ctx:CanvasRenderingContext2D;
+    imgEl?:TImageLoad;
+    dx:number;
+    dy:number;
+    dw:number;
+    dh:number;
+}
