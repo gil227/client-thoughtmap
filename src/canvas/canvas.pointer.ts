@@ -7,6 +7,7 @@ import {canvasDrawDispatch} from "@src/canvas/canvas.draw.ts";
 import {utilNode, utilNodeMathRound} from "@src/util/util.node.ts";
 import type {INodePatch, TNodeMake} from "@src/interface/interface.api.ts";
 import {storeKeyboardCursor, storeToolbarCursor} from "@src/store/store.cursor.ts";
+import {utilIsTextField} from "@src/util/util.is.text.field.ts";
 
 interface IPointerCallback{
     onPatchHandler:({id,canvasId,changes}:INodePatch) => void;
@@ -22,6 +23,7 @@ export const canvasPointer = (canvas:HTMLCanvasElement,store:Store,{onPatchHandl
     let nodeDragStart:{id:string,x:number,y:number}|null = null;
 
     const onSpacebarsDown = (e:KeyboardEvent) =>{
+        if(utilIsTextField(e)) return;
         if(e.code === 'Space'){
             e.preventDefault();
             onPress = true;
@@ -29,6 +31,7 @@ export const canvasPointer = (canvas:HTMLCanvasElement,store:Store,{onPatchHandl
         }
     }
     const onSpacebarsUp = (e:KeyboardEvent) =>{
+        if(utilIsTextField(e)) return;
         if(e.code === 'Space'){
             e.preventDefault();
             onPress = false;

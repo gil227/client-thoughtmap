@@ -1,6 +1,7 @@
 import type {Store} from "jotai";
 import type {TNode} from "@src/interface/interface.api.ts";
 import {utilNode} from "@src/util/util.node.ts";
+import {utilIsTextField} from "@src/util/util.is.text.field.ts";
 
 interface ICallback {
     onDeleteHandler: (node:TNode) => void;
@@ -9,6 +10,8 @@ interface ICallback {
 export const canvasKeyboard = (store:Store,{onDeleteHandler}:ICallback) =>{
 
     const onKeyDown = (e: KeyboardEvent) => {
+        if(utilIsTextField(e)) return;
+
         const selectNode = utilNode(store);
         if(selectNode && e.code === 'Backspace'){
             onDeleteHandler(selectNode);
