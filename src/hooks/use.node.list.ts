@@ -5,6 +5,7 @@ import type {TNode} from "@src/interface/interface.api.ts";
 import {useQuery} from "@tanstack/react-query";
 import {API_PASS, QUERY_KEY} from "@src/constant/constant.ts";
 import WithCredentialFetch from "@src/util/util.credential.fetch.ts";
+import {utilNodeCalcHeight} from "@src/util/util.node.ts";
 
 export const useNodeList = (canvasId:string) => {
     const store = useStore();
@@ -13,14 +14,29 @@ export const useNodeList = (canvasId:string) => {
         queryKey:QUERY_KEY.CANVAS_NODES(canvasId),
         queryFn:async () =>{
             const res = await WithCredentialFetch(`${API_PASS.CANVAS_LIST}/${canvasId}/nodes`);
-            if(!res) throw new Error('리스폰스가 언디파인 입니다.');
+            if(!res.ok) throw new Error('리스폰스가 언디파인 입니다.');
             const resData:TNode[] = await res.json();
-            return resData.length === 0 ? [] : resData;
+            return resData;
         },
         staleTime:5_000
     });
 
     useEffect(()=>{
-        store.set(storeNodes,canvasNodes ?? []);
+        let isCancel = false;
+
+        //폰트 로드가 된 뒤 한번만 실행
+        document.fonts.ready.then(() => {
+            if(isCancel) return;
+            const calcHeightNodeList = (canvasNodes ?? []).map((nodeItem)=>({
+                ...nodeItem,
+                height:utilNodeCalcHeight(nodeItem)
+            }))
+
+            store.set(storeNodes,calcHeightNodeList);
+        });
+
+        return () => {
+            isCancel = true
+        };
     },[canvasNodes, store])
 }
