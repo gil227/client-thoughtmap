@@ -3,7 +3,6 @@ import {storeNodes, storeSelectNode} from "@src/store/store.nodes.ts";
 import type {
     TNode,
     TNodeMake,
-    INodeMakeBase
 } from "@src/interface/interface.api.ts";
 import {NODE} from "@src/constant/constant.ts";
 import type {IDrawImage, IWordBreak, TImageLoad} from "@src/interface/interface.ts";
@@ -33,45 +32,18 @@ export const utilNodeMathRound =(v:number)=>{
 * 노드생성 기본값
 * */
 export const utilNodeBaseValue = (type:TNodeMake['type']):TNodeMake=>{
-    const baseSize:INodeMakeBase = {
-        width:NODE.WIDTH_PRESET('S'),
-        height:NODE.MIN_HEIGHT
-    };
+    let typeByValue:TNodeMake;
 
     if(type === 'text'){
-        return {
-            type:'text',
-            content:{
-                title:"새 노드"
-            },
-            ...baseSize
-        }
-    }
-
-    if(type === 'list'){
-        return {
-            type:'list',
-            content:{
-                title:"새 노드",
-                items:[
-                    {
-                        label:"새 목록"
-                    }
-                ]
-            },
-            ...baseSize
-        }
+        typeByValue = { type: 'text', content: { title: '새 노드' }, width: NODE.WIDTH_PRESET('S'), height: 0 };
+    }else if(type === 'list'){
+        typeByValue = { type: 'list', content: { title: '새 노드', items: [{ label: '새 목록' }] }, width: NODE.WIDTH_PRESET('S'), height: 0 };
+    }else{
+        typeByValue = { type: 'image', content: { title: '새 노드', url: 'https://images.unsplash.com/photo-1794136006725-c08fd5b269f3?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D', ratio: 1.4 }, width: NODE.WIDTH_PRESET('L'), height: 0 };
     }
 
     return {
-        type:'image',
-        content:{
-            title:"새 노드",
-            url:"https://images.unsplash.com/photo-1794136006725-c08fd5b269f3?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D",
-            ratio:1
-        },
-        width:NODE.WIDTH_PRESET('L'),
-        height:NODE.TYPE_IMAGE_BASE_HEIGHT
+        ...typeByValue,height:utilNodeCalcHeight(typeByValue)
     }
 }
 
@@ -79,7 +51,7 @@ export const utilNodeBaseValue = (type:TNodeMake['type']):TNodeMake=>{
 /*
 * 노드안 텍스트가 넓이보다 넘쳤을때 줄바꿈
 * */
-export const utilNodeWordBreak = (ctx:CanvasRenderingContext2D,text:string,{maxWidth,maxLineNumber}:IWordBreak)=>{
+export const utilNodeWordBreak = (ctx:CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D,text:string,{maxWidth,maxLineNumber}:IWordBreak)=>{
     const lines:string[] = [];
     const isFit = (s:string) => ctx.measureText(s).width <= maxWidth;
 
@@ -210,4 +182,39 @@ export const utilNodeIcon = (ctx:CanvasRenderingContext2D,node:TNode) =>{
     ctx.lineJoin = 'round';
     ctx.stroke(nodeIcon[node.type]);
     ctx.restore();
+}
+
+/*
+* 노드 높이 재계산
+* */
+const calcCanvas = new OffscreenCanvas(1,1).getContext('2d');
+export const utilNodeCalcHeight = (node:TNode|TNodeMake) =>{
+    if(!calcCanvas) return node.height;
+    const baseSpacing = NODE.PADDING*2 + NODE.FONT_TITLE_TEXT_SPACING + NODE.FONT_LINE_HEIGHT;
+    const nodeWidth = node.width - NODE.PADDING*2;
+    let nodeHeight = 0;
+
+
+    if(node.type === 'text'){
+        const bodyText = node.content.body || NODE.TYPE_TEXT_PLACEHOLDER;
+        calcCanvas.font = `${NODE.FONT_TEXT} ${NODE.FONT_FAMILY}`;
+        calcCanvas.letterSpacing = NODE.FONT_LETTER_SPACING;
+
+        const lines = utilNodeWordBreak(calcCanvas,bodyText,{
+            maxWidth:nodeWidth,
+            maxLineNumber:NODE.MAX_TEXT_LINE
+        });
+
+        nodeHeight = lines.length * NODE.FONT_LINE_HEIGHT;
+    }
+
+    if(node.type === 'list'){
+        nodeHeight = node.content.items.length * NODE.FONT_LINE_HEIGHT;
+    }
+
+    if(node.type === 'image'){
+        nodeHeight = nodeWidth / node.content.ratio;
+    }
+
+    return Math.min(nodeHeight + baseSpacing, NODE.MAX_HEIGHT);
 }
