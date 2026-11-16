@@ -7,6 +7,7 @@ export const canvasTypeText = (ctx:CanvasRenderingContext2D,node:TNodeText,{minX
     const titleX = minX;
     const titleY = minY;
     const bodyY = minY+NODE.FONT_LINE_HEIGHT+NODE.FONT_TITLE_TEXT_SPACING;
+    const bodyText = node.content.body ?? NODE.TYPE_TEXT_PLACEHOLDER;
 
     //제목
     ctx.fillText(node.content.title,titleX,titleY);
@@ -16,19 +17,23 @@ export const canvasTypeText = (ctx:CanvasRenderingContext2D,node:TNodeText,{minX
 
 
     //본문
-    if(!node.content.body) return;
+    if(!node.content.body){
+        ctx.font = `italic ${NODE.FONT_TEXT} ${NODE.FONT_FAMILY}`;
+    }else{
+        ctx.font = `${NODE.FONT_TEXT} ${NODE.FONT_FAMILY}`;
+    }
+
     ctx.fillStyle = NODE.FONT_COLOR_TEXT;
-    ctx.font = `${NODE.FONT_TEXT} ${NODE.FONT_FAMILY}`;
-    const bodyTextWidth = ctx.measureText(node.content.body).width;
+    const bodyTextWidth = ctx.measureText(bodyText).width;
     const nodeWidth = node.width - NODE.PADDING*2
 
     if(nodeWidth < bodyTextWidth){
-        const textLines = utilNodeWordBreak(ctx,node.content.body,{maxWidth:nodeWidth,maxLineNumber:NODE.MAX_TEXT_LINE})
+        const textLines = utilNodeWordBreak(ctx,bodyText,{maxWidth:nodeWidth,maxLineNumber:NODE.MAX_TEXT_LINE})
         textLines.forEach((line,i)=>{
             ctx.fillText(line,titleX,bodyY + NODE.FONT_LINE_HEIGHT*i);
         })
         return;
     }
 
-    ctx.fillText(node.content.body,titleX,bodyY);
+    ctx.fillText(bodyText,titleX,bodyY);
 }
