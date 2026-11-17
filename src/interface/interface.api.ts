@@ -64,8 +64,9 @@ export type TNode = TNodeText | TNodeList | TNodeImage;
 export type TNodeMake = TNodeMakeText|TNodeMakeList|TNodeMakeImage;
 
 export type TNodeChanges = {
-    positionX: number,
-    positionY: number
+    content?:TNodeMake['content'],
+    positionX?: number,
+    positionY?: number
 }
 
 export interface INodePatch {
