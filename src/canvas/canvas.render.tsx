@@ -5,6 +5,12 @@ import {useNodeDraw} from "@src/hooks/use.node.draw.ts";
 import {useStore} from "jotai";
 import {storeViewport} from "@src/store/store.viewport.ts";
 import {storeSelectNode} from "@src/store/store.nodes.ts";
+import styled from "@emotion/styled";
+import NodeEditor from "@src/node/node.editor.tsx";
+
+const Wrapper = styled.section`
+    position: relative;
+`
 
 function CanvasRender({canvasId}:{canvasId:string}){
     const canvasEl = useRef<HTMLCanvasElement>(null);
@@ -20,7 +26,10 @@ function CanvasRender({canvasId}:{canvasId:string}){
     useNodeList(canvasId);
     useNodeDraw(canvasEl,canvasId,{onPatch:onPatchNode,onDelete:onDeleteNode,onMake:onMakeNode})
 
-    return <canvas ref={canvasEl}></canvas>
+    return <Wrapper>
+        <canvas ref={canvasEl}></canvas>
+        <NodeEditor/>
+    </Wrapper>
 }
 
 export default CanvasRender;
