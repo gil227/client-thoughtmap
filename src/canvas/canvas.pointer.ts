@@ -2,7 +2,7 @@ import {type Store} from "jotai";
 import {storeViewport, storeViewportSize} from "@src/store/store.viewport.ts";
 import {canvasClamp, canvasViewportToDashboard} from "@src/canvas/canvas.transform.ts";
 import {canvasHitbox} from "@src/canvas/canvas.hitbox.ts";
-import {storeNodes, storeSelectNode} from "@src/store/store.nodes.ts";
+import {storeIsEdit, storeNodes, storeSelectNode} from "@src/store/store.nodes.ts";
 import {canvasDrawDispatch} from "@src/canvas/canvas.draw.ts";
 import {utilNode, utilNodeMathRound} from "@src/util/util.node.ts";
 import type {INodePatch, TNodeMake} from "@src/interface/interface.api.ts";
@@ -46,6 +46,8 @@ export const canvasPointer = (canvas:HTMLCanvasElement,store:Store,{onPatchHandl
         lastY = e.clientY;
 
         canvas.setPointerCapture(e.pointerId);
+
+        store.set(storeIsEdit,false);
 
         if(!onPress && toolbarState === 'select'){
             const storeNodeState = store.get(storeNodes);
@@ -116,10 +118,31 @@ export const canvasPointer = (canvas:HTMLCanvasElement,store:Store,{onPatchHandl
         }
     };
 
+    const onDbClick = (e:MouseEvent) => {
+        //1. 툴바가 선택이 아닐때
+        if(store.get(storeToolbarCursor) !== 'select') return;
+
+        //2. 선택된 노드가 없을때
+        const selectNode = store.get(storeSelectNode);
+        if(!selectNode) return;
+
+        //3. 더블클릭한곳에 노드가 없을때
+        const viewport = store.get(storeViewport);
+        const nodeList = store.get(storeNodes);
+        const {x,y} = canvasViewportToDashboard(viewport,{x:e.offsetX,y:e.offsetY});
+        const nodeHit = canvasHitbox(nodeList,x,y);
+        if(!nodeHit) return;
+
+        store.set(storeIsEdit,true);
+    }
+
     //클릭 드래그
     canvas.addEventListener('pointerdown', onPointerDown);
     canvas.addEventListener('pointermove', onPointerMove);
     canvas.addEventListener('pointerup', onPointerUp);
+
+    //더블클릭
+    canvas.addEventListener('dblclick', onDbClick);
 
     //스페이스바
     window.addEventListener('keydown', onSpacebarsDown);
