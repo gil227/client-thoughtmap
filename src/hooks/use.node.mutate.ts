@@ -3,8 +3,12 @@ import {useMutation, useQueryClient} from "@tanstack/react-query";
 import type {TNode, INodePatch, TNodeMake} from "@src/interface/interface.api.ts";
 import WithCredentialFetch from "@src/util/util.credential.fetch.ts";
 import {utilNodeBaseValue} from "@src/util/util.node.ts";
+import {useSetAtom} from "jotai";
+import {storeIsEdit, storeSelectNode} from "@src/store/store.nodes.ts";
 
 export const useNodeMutate = () =>{
+    const setSelectNode = useSetAtom(storeSelectNode);
+    const setIsEdit = useSetAtom(storeIsEdit);
     const queryClient = useQueryClient();
 
     const {mutate:onPatchNode} = useMutation(({
@@ -13,14 +17,17 @@ export const useNodeMutate = () =>{
                 method:'PATCH',
                 body:JSON.stringify(changes)
             })
-            if(!patchRes.ok) throw new Error('수정실패')
+            if(!patchRes.ok) throw new Error('수정실패');
+            return patchRes.json();
         },
-        onSuccess:(_,{id,canvasId,changes})=>{
-            queryClient.setQueryData<TNode[]>(QUERY_KEY.CANVAS_NODES(canvasId),(before)=>{
+        onSuccess:(update)=>{
+            queryClient.setQueryData<TNode[]>(QUERY_KEY.CANVAS_NODES(update.canvasId),(before)=>{
                 return before?.map((oldNode) => {
-                    return oldNode.id === id ? {...oldNode, ...changes} : oldNode
+                    return oldNode.id === update.id ? update : oldNode
                 })
             })
+            setSelectNode(update.id);
+            setIsEdit(true);
         }
     }))
 
@@ -54,7 +61,8 @@ export const useNodeMutate = () =>{
         onSuccess:(resData)=>{
             queryClient.setQueryData<TNode[]>(QUERY_KEY.CANVAS_NODES(resData.canvasId),(before)=>{
                 return [...(before ?? []),resData];
-            })
+            });
+
         }
     }))
 
