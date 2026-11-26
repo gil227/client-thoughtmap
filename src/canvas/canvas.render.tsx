@@ -28,7 +28,7 @@ function CanvasRender({canvasId}:{canvasId:string}){
 
     return <Wrapper>
         <canvas ref={canvasEl}></canvas>
-        <NodeEditor/>
+        <NodeEditor patchFn={onPatchNode}/>
     </Wrapper>
 }
 

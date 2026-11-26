@@ -2,9 +2,13 @@ import NodeEditorText from "@src/node/node.editor.text.tsx";
 import {useAtomValue, useStore} from "jotai";
 import {storeIsEdit, storeSelectNode} from "@src/store/store.nodes.ts";
 import {utilNode} from "@src/util/util.node.ts";
+import type {IHooksNode} from "@src/interface/interface.api.ts";
 
+interface IProps {
+    patchFn:IHooksNode['onPatch'];
+}
 
-function NodeEditor(){
+function NodeEditor({patchFn}:IProps) {
     const store = useStore();
     const selectNode = useAtomValue(storeSelectNode);
     const isEdit = useAtomValue(storeIsEdit);
@@ -12,7 +16,7 @@ function NodeEditor(){
 
     if(!selectNode || !isEdit || !nodeInfo) return null;
     if(nodeInfo.type === 'text'){
-        return <NodeEditorText {...nodeInfo}/>
+        return <NodeEditorText patchFn={patchFn} nodeObj={nodeInfo}/>
     }
     return <></>
 }

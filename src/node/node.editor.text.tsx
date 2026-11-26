@@ -1,9 +1,10 @@
 import styled from "@emotion/styled";
-import type {TNodeText} from "@src/interface/interface.api.ts";
+import type {IHooksNode, TNodeText} from "@src/interface/interface.api.ts";
 import {canvasDashboardToViewport} from "@src/canvas/canvas.transform.ts";
 import {useAtomValue} from "jotai";
 import {storeViewport} from "@src/store/store.viewport.ts";
 import {NODE} from "@src/constant/constant.ts";
+import {useState} from "react";
 
 interface INodeWrapperCSS {
     x:number;
@@ -16,6 +17,11 @@ interface ITextAreaCSS {
     y:number;
     width:number;
     height:number;
+}
+
+interface IProps {
+    nodeObj:TNodeText;
+    patchFn:IHooksNode['onPatch'];
 }
 
 const Wrapper = {
@@ -53,7 +59,8 @@ const TextFiled = {
     }))
 }
 
-function NodeEditorText(nodeObj:TNodeText){
+function NodeEditorText({patchFn,nodeObj}:IProps){
+    const [value,setValue] = useState<string>(nodeObj.content.body ?? '')
     const viewport = useAtomValue(storeViewport);
     const {x,y} = canvasDashboardToViewport(viewport,{x:nodeObj.positionX,y:nodeObj.positionY});
     const wrapperNodeStyle = {
@@ -68,9 +75,13 @@ function NodeEditorText(nodeObj:TNodeText){
         height: nodeObj.height - NODE.PADDING*2 - NODE.FONT_LINE_HEIGHT,
         y:NODE.PADDING + NODE.FONT_TITLE_TEXT_SPACING+NODE.FONT_LINE_HEIGHT
     }
+
     return <Wrapper.cover>
         <Wrapper.node styleInfo={wrapperNodeStyle}>
-            <TextFiled.textArea styleInfo={textAreaStyle}></TextFiled.textArea>
+            <TextFiled.textArea styleInfo={textAreaStyle} value={value} onChange={(e)=> setValue(e.target.value)} onBlur={()=> {
+                console.log('blur!');
+                patchFn({id:nodeObj.id,canvasId:nodeObj.canvasId,changes:{content:{title:nodeObj.content.title,body:value}}});
+            }}></TextFiled.textArea>
         </Wrapper.node>
     </Wrapper.cover>
 }
